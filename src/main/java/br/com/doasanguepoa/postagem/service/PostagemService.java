@@ -27,5 +27,9 @@ public class PostagemService {
     public void deletarPostagem(Long id) {
         postagemRepository.deleteById(id);
     }
+
+    public void atualizarPostagemPorId(Postagem entity) {
+        postagemRepository.persist(entity);
+    }
 }
 

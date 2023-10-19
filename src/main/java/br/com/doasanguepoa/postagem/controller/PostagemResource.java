@@ -1,8 +1,9 @@
 package br.com.doasanguepoa.postagem.controller;
-import br.com.doasanguepoa.postagem.dto.postagem.PostagemDTO;
+import br.com.doasanguepoa.postagem.dto.postagem.DadosAtualizacaoPostagemDTO;
+import br.com.doasanguepoa.postagem.dto.postagem.DadosCadastroPostagemDTO;
+import br.com.doasanguepoa.postagem.dto.postagem.DadosListagemPostagemDTO;
 import br.com.doasanguepoa.postagem.model.Postagem;
 import br.com.doasanguepoa.postagem.service.PostagemService;
-import jakarta.annotation.security.PermitAll;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
@@ -15,10 +16,9 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
-
-import java.util.ArrayList;
 import java.util.List;
 
+//https://www.linkedin.com/pulse/tutorial-quarkus-simplificando-o-hibernate-panache-da-silva-melo/?originalSubdomain=pt
 @Slf4j
 @Path("/postagens")
 @Produces(MediaType.APPLICATION_JSON)
@@ -36,20 +36,12 @@ public class PostagemResource {
 
     @GET
     //@RolesAllowed({ "USUARIO","INSTITUICAO" })
-    @PermitAll
-    public List<PostagemDTO> listarPostagens(@HeaderParam("Host") String host) {
-        List<PostagemDTO> postagensDTO = new ArrayList<>();
+    public List<DadosListagemPostagemDTO> listarPostagens() {
 
-        try{
-            List<Postagem> postagens = postagemService.listarPostagens();
-            for(Postagem postagem: postagens){
-                postagensDTO.add(new PostagemDTO(postagem.getTitulo(),postagem.getMensagem()));
-            }
-            log.info("Exibindo postagens para o front {0}", host);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return postagensDTO;
+        return postagemService.listarPostagens()
+                .stream()
+                .map(DadosListagemPostagemDTO::new)
+                .toList();
     }
 
 
@@ -68,7 +60,7 @@ public class PostagemResource {
     @POST
     @Transactional
     @RolesAllowed({ "INSTITUICAO" })
-    public void adicionarPostagem(@Valid PostagemDTO postagemDTO) {
+    public void adicionarPostagem(@Valid DadosCadastroPostagemDTO postagemDTO) {
         String cnpjInstituicao = jwt.getClaim("upn");
         log.info("Adicionando postagem da instituicao: {0}", cnpjInstituicao);
         Postagem postagem = new Postagem(postagemDTO.titulo(), postagemDTO.mensagem());
@@ -76,18 +68,17 @@ public class PostagemResource {
     }
 
     @PUT
-    @Path("/{id}")
+    //@Path("/{id}")
     @Transactional
     @RolesAllowed({ "INSTITUICAO" })
-    public Postagem atualizarPostagem(@PathParam Long id, @Valid Postagem postagem) {
-        Postagem entity = postagemService.buscarPostagemPorId(id);
+    public Postagem atualizarPostagem(@Valid DadosAtualizacaoPostagemDTO postagemDTO) {
+        Postagem entity = postagemService.buscarPostagemPorId(postagemDTO.id());
         if (entity == null) {
-            String mensagemErro = "Postagem com ID '" + id + "'não encontrada.";
+            String mensagemErro = "Postagem com ID '" + postagemDTO.id() + "'não encontrada.";
             throw new WebApplicationException(mensagemErro, Response.Status.NOT_FOUND);
         }
-
-        entity.setTitulo(postagem.getTitulo());
-        entity.setMensagem(postagem.getMensagem());
+        entity.setMensagem(postagemDTO.mensagem());
+        postagemService.atualizarPostagemPorId(entity);
 
         return entity;
     }

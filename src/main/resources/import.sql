@@ -1,3 +1,3 @@
-insert into postagens (id, mensagem, titulo) values(1, 'Sangue AB+', 'hcpa');
-insert into postagens (id, mensagem, titulo) values(2, 'Sangue O+', 'hps');
-insert into postagens (id, mensagem, titulo) values(3, 'Sangue A-', 'hed');
+insert into postagens (id, mensagem, titulo, createdAt, updateAt) values(1, 'Sangue AB+', 'hcpa', '2023-10-19 16:55:59.806000 +00:00', '2023-10-19 16:55:59 +00:00');
+insert into postagens (id, mensagem, titulo, createdAt, updateAt) values(2, 'Sangue O+', 'hps', '2023-10-19 16:55:59.806000 +00:00', '2023-10-19 16:55:59 +00:00');
+insert into postagens (id, mensagem, titulo, createdAt, updateAt) values(3, 'Sangue A-', 'hed', '2023-10-19 16:55:59.806000 +00:00', '2023-10-19 16:55:59 +00:00');
