@@ -77,9 +77,13 @@ public class PostagemResource {
             String mensagemErro = "Postagem com ID '" + postagemDTO.id() + "'não encontrada.";
             throw new WebApplicationException(mensagemErro, Response.Status.NOT_FOUND);
         }
-        entity.setMensagem(postagemDTO.mensagem());
-        postagemService.atualizarPostagemPorId(entity);
-
+        if(postagemDTO.id() != null && postagemDTO.mensagem() != null) {
+            entity.setMensagem(postagemDTO.mensagem());
+            postagemService.atualizarPostagemPorId(entity);
+        }else {
+            String mensagemErroAtualizarValor = "A mensagem é obrigatória";
+            throw new WebApplicationException(mensagemErroAtualizarValor, Response.Status.BAD_REQUEST);
+        }
         return entity;
     }
 
