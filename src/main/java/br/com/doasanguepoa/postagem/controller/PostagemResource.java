@@ -37,7 +37,7 @@ public class PostagemResource {
     @GET
     //@RolesAllowed({ "USUARIO","INSTITUICAO" })
     public List<DadosListagemPostagemDTO> listarPostagens() {
-
+        log.info("Listando postagens");
         return postagemService.listarPostagens()
                 .stream()
                 .map(DadosListagemPostagemDTO::new)
