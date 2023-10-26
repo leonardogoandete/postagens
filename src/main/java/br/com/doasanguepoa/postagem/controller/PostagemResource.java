@@ -37,7 +37,7 @@ public class PostagemResource {
     @GET
     //@RolesAllowed({ "USUARIO","INSTITUICAO" })
     public List<DadosListagemPostagemDTO> listarPostagens() {
-
+        log.info("Listando postagens");
         return postagemRepository.listAll()
                 .stream()
                 .map(DadosListagemPostagemDTO::new)
@@ -54,6 +54,7 @@ public class PostagemResource {
             String mensagemErro = "Postagem com ID '" + id +"' não encontrada.";
             throw new WebApplicationException(mensagemErro, Response.Status.NOT_FOUND);
         }
+        log.info("Buscando postagem por id: {0}", id);
         return entity;
     }
 
@@ -62,8 +63,8 @@ public class PostagemResource {
     @RolesAllowed({ "INSTITUICAO" })
     public void adicionarPostagem(@Valid DadosCadastroPostagemDTO postagemDTO) {
         String cnpjInstituicao = jwt.getClaim("upn");
-        log.info("Adicionando postagem da instituicao: {0}", cnpjInstituicao);
         Postagem postagem = new Postagem(postagemDTO.titulo(), postagemDTO.mensagem());
+        log.info("Adicionando postagem da instituicao: {0}", cnpjInstituicao);
         postagemRepository.persist(postagem);
     }
 
@@ -75,13 +76,16 @@ public class PostagemResource {
         Postagem entity = postagemRepository.findById(postagemDTO.id());
         if (entity == null) {
             String mensagemErro = "Postagem com ID '" + postagemDTO.id() + "'não encontrada.";
+            log.error(mensagemErro);
             throw new WebApplicationException(mensagemErro, Response.Status.NOT_FOUND);
         }
         if(postagemDTO.id() != null && postagemDTO.mensagem() != null) {
             entity.setMensagem(postagemDTO.mensagem());
+            log.info("Atualizando postagem com id: {0}", postagemDTO.id());
             postagemRepository.persist(entity);
         }else {
             String mensagemErroAtualizarValor = "A mensagem é obrigatória";
+            log.error(mensagemErroAtualizarValor);
             throw new WebApplicationException(mensagemErroAtualizarValor, Response.Status.BAD_REQUEST);
         }
         return entity;
@@ -95,8 +99,10 @@ public class PostagemResource {
         Postagem entity = postagemRepository.findById(id);
         if (entity == null) {
             String mensagemErro = "Postagem com ID" + id + "não encontrada.";
+            log.info(mensagemErro);
             throw new WebApplicationException(mensagemErro, Response.Status.NOT_FOUND);
         }
+        log.info("Deletando postagem com id: {0}", id);
         postagemRepository.deleteById(id);
     }
 }
