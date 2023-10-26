@@ -1,9 +1,9 @@
 package br.com.doasanguepoa.postagem.controller;
+import br.com.doasanguepoa.postagem.dto.postagem.DadosAtualizacaoPostagemDTO;
 import br.com.doasanguepoa.postagem.dto.postagem.DadosCadastroPostagemDTO;
 import br.com.doasanguepoa.postagem.dto.postagem.DadosListagemPostagemDTO;
 import br.com.doasanguepoa.postagem.model.Postagem;
-import br.com.doasanguepoa.postagem.service.PostagemService;
-import jakarta.annotation.security.PermitAll;
+import br.com.doasanguepoa.postagem.repository.PostagemRepository;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
@@ -16,40 +16,32 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
-
-import java.util.ArrayList;
 import java.util.List;
 
+//https://www.linkedin.com/pulse/tutorial-quarkus-simplificando-o-hibernate-panache-da-silva-melo/?originalSubdomain=pt
 @Slf4j
 @Path("/postagens")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @SecurityScheme(scheme = "Bearer",
-                type = SecuritySchemeType.HTTP,
-                bearerFormat = "JWT")
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT")
 public class PostagemResource {
 
     @Inject
-    PostagemService postagemService;
+    PostagemRepository postagemRepository;
 
     @Inject
     JsonWebToken jwt;
 
     @GET
-    @RolesAllowed({ "USUARIO","INSTITUICAO" })
-    public List<DadosListagemPostagemDTO> listarPostagens(@HeaderParam("Host") String host) {
-        List<DadosListagemPostagemDTO> postagensDTO = new ArrayList<>();
+    //@RolesAllowed({ "USUARIO","INSTITUICAO" })
+    public List<DadosListagemPostagemDTO> listarPostagens() {
 
-        try{
-            List<Postagem> postagens = postagemService.listarPostagens();
-            for(Postagem postagem: postagens){
-                postagensDTO.add(new DadosListagemPostagemDTO(postagem.getId(), postagem.getTitulo(),postagem.getMensagem()));
-            }
-            log.info("Exibindo postagens para o front {0}", host);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return postagensDTO;
+        return postagemRepository.listAll()
+                .stream()
+                .map(DadosListagemPostagemDTO::new)
+                .toList();
     }
 
 
@@ -57,13 +49,12 @@ public class PostagemResource {
     @Path("/{id}")
     @RolesAllowed({ "USUARIO","INSTITUICAO" })
     public Postagem buscarPostagemPorId(@PathParam Long id) {
-        Postagem entity = postagemService.buscarPostagemPorId(id);
+        Postagem entity = postagemRepository.findById(id);
         if (entity == null) {
             String mensagemErro = "Postagem com ID '" + id +"' não encontrada.";
             throw new WebApplicationException(mensagemErro, Response.Status.NOT_FOUND);
         }
-        log.info("Exibindo postagem com ID: {0}", id);
-        return postagemService.buscarPostagemPorId(id);
+        return entity;
     }
 
     @POST
@@ -73,23 +64,26 @@ public class PostagemResource {
         String cnpjInstituicao = jwt.getClaim("upn");
         log.info("Adicionando postagem da instituicao: {0}", cnpjInstituicao);
         Postagem postagem = new Postagem(postagemDTO.titulo(), postagemDTO.mensagem());
-        postagemService.adicionarPostagem(postagem);
+        postagemRepository.persist(postagem);
     }
 
     @PUT
-    @Path("/{id}")
+    //@Path("/{id}")
     @Transactional
     @RolesAllowed({ "INSTITUICAO" })
-    public Postagem atualizarPostagem(@PathParam Long id, @Valid Postagem postagem) {
-        Postagem entity = postagemService.buscarPostagemPorId(id);
+    public Postagem atualizarPostagem(@Valid DadosAtualizacaoPostagemDTO postagemDTO) {
+        Postagem entity = postagemRepository.findById(postagemDTO.id());
         if (entity == null) {
-            String mensagemErro = "Postagem com ID '" + id + "'não encontrada.";
+            String mensagemErro = "Postagem com ID '" + postagemDTO.id() + "'não encontrada.";
             throw new WebApplicationException(mensagemErro, Response.Status.NOT_FOUND);
         }
-        log.info("Atualizando postagem com ID: {0}", id);
-        entity.setTitulo(postagem.getTitulo());
-        entity.setMensagem(postagem.getMensagem());
-
+        if(postagemDTO.id() != null && postagemDTO.mensagem() != null) {
+            entity.setMensagem(postagemDTO.mensagem());
+            postagemRepository.persist(entity);
+        }else {
+            String mensagemErroAtualizarValor = "A mensagem é obrigatória";
+            throw new WebApplicationException(mensagemErroAtualizarValor, Response.Status.BAD_REQUEST);
+        }
         return entity;
     }
 
@@ -98,12 +92,11 @@ public class PostagemResource {
     @Transactional
     @RolesAllowed({ "ADMIN","INSTITUICAO" })
     public void deletarPostagem(@PathParam Long id) {
-        Postagem entity = postagemService.buscarPostagemPorId(id);
+        Postagem entity = postagemRepository.findById(id);
         if (entity == null) {
             String mensagemErro = "Postagem com ID" + id + "não encontrada.";
             throw new WebApplicationException(mensagemErro, Response.Status.NOT_FOUND);
         }
-        log.info("Deletando postagem com ID: {0}", id);
-        postagemService.deletarPostagem(id);
+        postagemRepository.deleteById(id);
     }
 }
