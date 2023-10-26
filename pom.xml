@@ -33,6 +33,10 @@
       <artifactId>lombok</artifactId>
       <version>1.18.28</version>
     </dependency>
+       <dependency>
+       <groupId>io.quarkus</groupId>
+       <artifactId>quarkus-smallrye-metrics</artifactId>
+    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-jwt</artifactId>
