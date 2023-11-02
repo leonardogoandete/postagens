@@ -5,6 +5,7 @@ import br.com.doasanguepoa.postagem.dto.postagem.DadosCadastroPostagemDTO;
 import br.com.doasanguepoa.postagem.dto.postagem.DadosListagemPostagemDTO;
 import br.com.doasanguepoa.postagem.model.Postagem;
 import br.com.doasanguepoa.postagem.repository.PostagemRepository;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.NoResultException;
 import jakarta.ws.rs.core.Response;
@@ -32,13 +33,8 @@ import java.util.Optional;
         bearerFormat = "JWT")
 public class PostagemResource {
 
-    private final PostagemRepository postagemRepository;
-    private final JsonWebToken jwt;
-
-    PostagemResource(PostagemRepository postagemRepository, JsonWebToken jwt) {
-        this.postagemRepository = postagemRepository;
-        this.jwt = jwt;
-    }
+    @Inject
+    PostagemRepository postagemRepository;
 
     @GET
     //@RolesAllowed({ "USUARIO","INSTITUICAO" })
@@ -134,7 +130,7 @@ public class PostagemResource {
     @Path("/{id}")
     @Transactional
     @RolesAllowed({"ADMIN", "INSTITUICAO"})
-    public void deletarPostagem(@PathParam Long id) {
+    public Response deletarPostagem(@PathParam Long id) {
         if (id == null) {
             String mensagemErro = "O ID é obrigatório";
             log.error(mensagemErro);
@@ -154,6 +150,7 @@ public class PostagemResource {
             log.info("Deletando postagem com id: {}", id);
             postagemRepository.delete(entity);
 
+            return Response.status(Response.Status.NO_CONTENT).build();
         } catch (WebApplicationException e) {
             // Você pode lidar com exceções específicas aqui, se necessário.
             throw e;
@@ -161,6 +158,5 @@ public class PostagemResource {
             log.error("Erro interno ao deletar postagem com id: {}", id, e);
             throw new WebApplicationException("Erro interno ao deletar postagem!", Response.Status.INTERNAL_SERVER_ERROR);
         }
-
     }
 }
