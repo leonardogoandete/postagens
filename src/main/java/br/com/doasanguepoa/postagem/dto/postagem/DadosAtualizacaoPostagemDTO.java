@@ -8,5 +8,9 @@ public record DadosAtualizacaoPostagemDTO(
         Long id,
         @NotBlank
         String mensagem) {
+        public DadosAtualizacaoPostagemDTO(Long id, String mensagem) {
+                this.id = id;
+                this.mensagem = mensagem;
+        }
 
 }

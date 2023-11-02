@@ -24,9 +24,10 @@ public class Postagem {
     private Instant createdAt;
     @UpdateTimestamp
     private Instant updateAt;
-    //botar um timestamp
 
     public Postagem(String mensagem) {
         this.mensagem = mensagem;
+        this.createdAt = Instant.now();
+        this.updateAt = Instant.now();
     }
 }

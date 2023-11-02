@@ -1,22 +1,26 @@
 package br.com.doasanguepoa.postagem.controller;
+
 import br.com.doasanguepoa.postagem.dto.postagem.DadosAtualizacaoPostagemDTO;
 import br.com.doasanguepoa.postagem.dto.postagem.DadosCadastroPostagemDTO;
 import br.com.doasanguepoa.postagem.dto.postagem.DadosListagemPostagemDTO;
 import br.com.doasanguepoa.postagem.model.Postagem;
 import br.com.doasanguepoa.postagem.repository.PostagemRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.NoResultException;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
+
 import java.util.List;
+import java.util.Optional;
 
 //https://www.linkedin.com/pulse/tutorial-quarkus-simplificando-o-hibernate-panache-da-silva-melo/?originalSubdomain=pt
 @Slf4j
@@ -41,10 +45,13 @@ public class PostagemResource {
     public List<DadosListagemPostagemDTO> listarPostagens() {
         try {
             log.info("Listando postagens");
-            return postagemRepository.listAll()
-                    .stream()
+            List<Postagem> postagens = postagemRepository.listAll();
+            return postagens.stream()
                     .map(DadosListagemPostagemDTO::new)
                     .toList();
+        } catch (NoResultException e) {
+            log.error("Nenhuma postagem encontrada", e);
+            throw new WebApplicationException("Nenhuma postagem encontrada", Response.Status.NOT_FOUND);
         } catch (Exception e) {
             log.error("Erro ao listar postagens", e);
             throw new WebApplicationException("Erro ao listar postagens", Response.Status.INTERNAL_SERVER_ERROR);
@@ -54,8 +61,14 @@ public class PostagemResource {
 
     @GET
     @Path("/{id}")
-    @RolesAllowed({ "USUARIO","INSTITUICAO" })
+    @RolesAllowed({"USUARIO", "INSTITUICAO"})
     public Postagem buscarPostagemPorId(@PathParam Long id) {
+        if (id == null) {
+            String mensagemErro = "O ID é obrigatório";
+            log.error(mensagemErro);
+            throw new WebApplicationException(mensagemErro, Response.Status.BAD_REQUEST);
+        }
+
         try {
             log.info("Buscando postagem com id: {0}", id);
             return postagemRepository.findById(id);
@@ -67,18 +80,18 @@ public class PostagemResource {
 
     @POST
     @Transactional
-    @RolesAllowed({ "INSTITUICAO" })
+    @RolesAllowed({"INSTITUICAO"})
     public void adicionarPostagem(@Valid DadosCadastroPostagemDTO postagemDTO) {
+        if (postagemDTO.mensagem() == null) {
+            String mensagemErro = "A mensagem é obrigatória";
+            log.error(mensagemErro);
+            throw new WebApplicationException(mensagemErro, Response.Status.BAD_REQUEST);
+        }
+
         try {
-            if(postagemDTO.mensagem() != null) {
-                Postagem postagem = new Postagem(postagemDTO.mensagem());
-                log.info("Adicionando postagem");
-                postagemRepository.persist(postagem);
-            }else {
-                String mensagemErro = "A mensagem é obrigatória";
-                log.error(mensagemErro);
-                throw new WebApplicationException(mensagemErro, Response.Status.BAD_REQUEST);
-            }
+            Postagem postagem = new Postagem(postagemDTO.mensagem());
+            log.info("Adicionando postagem");
+            postagemRepository.persist(postagem);
         } catch (Exception e) {
             log.error("Erro ao adicionar postagem", e);
             throw new WebApplicationException("Erro ao adicionar postagem", Response.Status.INTERNAL_SERVER_ERROR);
@@ -88,20 +101,31 @@ public class PostagemResource {
     @PUT
     //@Path("/{id}")
     @Transactional
-    @RolesAllowed({ "INSTITUICAO" })
+    @RolesAllowed({"INSTITUICAO"})
     public Postagem atualizarPostagem(@Valid DadosAtualizacaoPostagemDTO postagemDTO) {
+        if (postagemDTO.mensagem() == null || postagemDTO.id() == null) {
+            String mensagemErro = "A mensagem e o ID são obrigatórios";
+            log.error(mensagemErro);
+            throw new WebApplicationException(mensagemErro, Response.Status.BAD_REQUEST);
+        }
+
         try {
-            Postagem entity = postagemRepository.findById(postagemDTO.id());
-            if (entity == null) {
-                String mensagemErro = "Postagem com ID" + postagemDTO.id() + "não encontrada.";
+            Optional<Postagem> optionalEntity = postagemRepository.findByIdOptional(postagemDTO.id());
+            if (optionalEntity.isEmpty()) {
+                String mensagemErro = "Postagem com ID " + postagemDTO.id() + " inexistente.";
                 log.info(mensagemErro);
                 throw new WebApplicationException(mensagemErro, Response.Status.NOT_FOUND);
             }
+            Postagem entity = optionalEntity.get();
             entity.setMensagem(postagemDTO.mensagem());
             log.info("Atualizando postagem com id: {0}", postagemDTO.id());
-            return postagemRepository.getEntityManager().merge(entity);
+            postagemRepository.persist(entity);
+            return entity;
+        } catch (WebApplicationException e) {
+            // Você pode lidar com exceções específicas aqui, se necessário.
+            throw e;
         } catch (Exception e) {
-            log.error("Erro ao atualizar postagem com id: {0}", postagemDTO.id(), e);
+            log.error("Erro ao atualizar postagem com id: {}", postagemDTO.id(), e);
             throw new WebApplicationException("Erro ao atualizar postagem com id: " + postagemDTO.id(), Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
@@ -109,20 +133,34 @@ public class PostagemResource {
     @DELETE
     @Path("/{id}")
     @Transactional
-    @RolesAllowed({ "ADMIN","INSTITUICAO" })
+    @RolesAllowed({"ADMIN", "INSTITUICAO"})
     public void deletarPostagem(@PathParam Long id) {
+        if (id == null) {
+            String mensagemErro = "O ID é obrigatório";
+            log.error(mensagemErro);
+            throw new WebApplicationException(mensagemErro, Response.Status.BAD_REQUEST);
+        }
         try {
-            Postagem entity = postagemRepository.findById(id);
-            if (entity == null) {
-                String mensagemErro = "Postagem com ID" + id + "não encontrada.";
+            Optional<Postagem> optionalEntity = postagemRepository.findByIdOptional(id);
+
+            if (optionalEntity.isEmpty()) {
+                String mensagemErro = "Postagem com ID " + id + " não encontrada.";
                 log.info(mensagemErro);
                 throw new WebApplicationException(mensagemErro, Response.Status.NOT_FOUND);
             }
-            log.info("Deletando postagem com id: {0}", id);
+
+            Postagem entity = optionalEntity.get();
+
+            log.info("Deletando postagem com id: {}", id);
             postagemRepository.delete(entity);
+
+        } catch (WebApplicationException e) {
+            // Você pode lidar com exceções específicas aqui, se necessário.
+            throw e;
         } catch (Exception e) {
-            log.error("Erro ao deletar postagem com id: {0}", id, e);
-            throw new WebApplicationException("Erro ao deletar postagem com id: " + id, Response.Status.INTERNAL_SERVER_ERROR);
+            log.error("Erro interno ao deletar postagem com id: {}", id, e);
+            throw new WebApplicationException("Erro interno ao deletar postagem!", Response.Status.INTERNAL_SERVER_ERROR);
         }
+
     }
 }
