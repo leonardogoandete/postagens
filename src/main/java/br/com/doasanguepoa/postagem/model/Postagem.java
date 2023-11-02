@@ -19,7 +19,6 @@ public class Postagem {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String titulo;
     private String mensagem;
 
     @CreationTimestamp
@@ -28,8 +27,7 @@ public class Postagem {
     private Instant updateAt;
     //botar um timestamp
 
-    public Postagem(String titulo, String mensagem) {
-        this.titulo = titulo;
+    public Postagem(String mensagem) {
         this.mensagem = mensagem;
     }
 }

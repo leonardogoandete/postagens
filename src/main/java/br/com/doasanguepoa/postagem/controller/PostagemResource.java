@@ -63,7 +63,7 @@ public class PostagemResource {
     @RolesAllowed({ "INSTITUICAO" })
     public void adicionarPostagem(@Valid DadosCadastroPostagemDTO postagemDTO) {
         String cnpjInstituicao = jwt.getClaim("upn");
-        Postagem postagem = new Postagem(postagemDTO.titulo(), postagemDTO.mensagem());
+        Postagem postagem = new Postagem(postagemDTO.mensagem());
         log.info("Adicionando postagem da instituicao: {0}", cnpjInstituicao);
         postagemRepository.persist(postagem);
     }
