@@ -28,11 +28,14 @@ import java.util.List;
         bearerFormat = "JWT")
 public class PostagemResource {
 
-    @Inject
-    PostagemRepository postagemRepository;
+    private final PostagemRepository postagemRepository;
+    private final JsonWebToken jwt;
 
-    @Inject
-    JsonWebToken jwt;
+    PostagemResource(PostagemRepository postagemRepository, JsonWebToken jwt) {
+        this.postagemRepository = postagemRepository;
+        this.jwt = jwt;
+
+    }
 
     @GET
     //@RolesAllowed({ "USUARIO","INSTITUICAO" })
