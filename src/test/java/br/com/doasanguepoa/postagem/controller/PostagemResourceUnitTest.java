@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
-public class PostagemResourceUnitTest {
+ class PostagemResourceUnitTest {
 
     @Mock
     PostagemRepository postagemRepository;
@@ -32,7 +32,7 @@ public class PostagemResourceUnitTest {
 
     @Test
     @Transactional
-    public void listarPostagensTest() {
+    void listarPostagensTest() {
         List<DadosListagemPostagemDTO> postagens = new ArrayList<>(); // Crie uma lista de DadosListagemPostagemDTO fictícia
 
         DadosListagemPostagemDTO postagem1 = new DadosListagemPostagemDTO(1L, "Test Post 1");
@@ -51,7 +51,7 @@ public class PostagemResourceUnitTest {
 
 
     @Test
-    public void buscarPostagemPorIdTest() {
+    void buscarPostagemPorIdTest() {
         Postagem postagem = new Postagem("Test Post");
         postagem.setId(1L);
         lenient().when(postagemRepository.findById(1L)).thenReturn(postagem);
@@ -62,14 +62,14 @@ public class PostagemResourceUnitTest {
 
 
     @Test
-    public void adicionarPostagemTest() {
+    void adicionarPostagemTest() {
         DadosCadastroPostagemDTO postagemDTO = new DadosCadastroPostagemDTO("Test Post");
         postagemResource.adicionarPostagem(postagemDTO);
         verify(postagemResource).adicionarPostagem(postagemDTO);
     }
 
     @Test
-    public void adicionarPostagemComMensagemNulaTest() {
+    void adicionarPostagemComMensagemNulaTest() {
         DadosCadastroPostagemDTO postagemDTO = new DadosCadastroPostagemDTO(null);
         try {
             postagemResource.adicionarPostagem(postagemDTO);
@@ -81,7 +81,7 @@ public class PostagemResourceUnitTest {
 
     @Test
     @Transactional
-    public void atualizarPostagemTest() {
+    void atualizarPostagemTest() {
         Postagem postagem = new Postagem("Original Test Post");
         lenient().when(postagemRepository.findById(1L)).thenReturn(postagem);
 
@@ -95,7 +95,7 @@ public class PostagemResourceUnitTest {
     }
 
     @Test
-    public void atualizarPostagemInexistenteTest() {
+     void atualizarPostagemInexistenteTest() {
         try {
             DadosAtualizacaoPostagemDTO postagemDTO = new DadosAtualizacaoPostagemDTO(99L, "Updated Test Post");
             postagemResource.atualizarPostagem(postagemDTO);
@@ -105,7 +105,7 @@ public class PostagemResourceUnitTest {
     }
 
     @Test
-    public void deletarPostagemInexistenteTest() {
+     void deletarPostagemInexistenteTest() {
         try {
             postagemResource.deletarPostagem(1L);
         } catch (WebApplicationException e) {

@@ -33,7 +33,6 @@ import java.util.Optional;
         bearerFormat = "JWT")
 public class PostagemResource {
 
-    @Inject
     PostagemRepository postagemRepository;
 
     @GET
