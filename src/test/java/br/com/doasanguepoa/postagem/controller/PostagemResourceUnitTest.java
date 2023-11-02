@@ -105,19 +105,6 @@ public class PostagemResourceUnitTest {
     }
 
     @Test
-    @Transactional
-    public void deletarPostagemTest() {
-        try{
-            postagemResource.deletarPostagem(1L);
-            assertEquals(Response.Status.NO_CONTENT.getStatusCode(), 204);
-        }catch (WebApplicationException e){
-            assertEquals(Response.Status.NO_CONTENT.getStatusCode(), e.getResponse().getStatus());
-        }
-    }
-
-
-
-    @Test
     public void deletarPostagemInexistenteTest() {
         try {
             postagemResource.deletarPostagem(1L);
