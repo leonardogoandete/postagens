@@ -1,5 +1,6 @@
 package br.com.doasanguepoa.postagem.model;
 
+import br.com.doasanguepoa.postagem.dto.postagem.DadosListagemPostagemDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
