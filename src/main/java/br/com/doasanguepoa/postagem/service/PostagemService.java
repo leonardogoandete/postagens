@@ -1,11 +1,14 @@
 package br.com.doasanguepoa.postagem.service;
 
+import br.com.doasanguepoa.postagem.cliente.ICadastroServiceClient;
 import br.com.doasanguepoa.postagem.dto.postagem.DadosAtualizacaoPostagemDTO;
 import br.com.doasanguepoa.postagem.dto.postagem.DadosCadastroPostagemDTO;
 import br.com.doasanguepoa.postagem.dto.postagem.DadosListagemPostagemDTO;
 import br.com.doasanguepoa.postagem.model.Postagem;
 import br.com.doasanguepoa.postagem.repository.PostagemRepository;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +20,18 @@ import java.util.Optional;
 @Slf4j
 @ApplicationScoped
 public class PostagemService {
+
+    @Inject
+    @RestClient
+    ICadastroServiceClient cadastroServiceClient;
     private final PostagemRepository postagemRepository;
 
     public PostagemService(PostagemRepository postagemRepository) {
         this.postagemRepository = postagemRepository;
+    }
+
+    public String buscarInstituicaoPorNome(String nomeInstituicao){
+        return cadastroServiceClient.buscarInstituicaoPorNome(nomeInstituicao).cnpj();
     }
 
     public List<DadosListagemPostagemDTO> listarTodasPostagens() {
@@ -138,4 +149,31 @@ public class PostagemService {
         }
     }
 
+    //Listar postagem por instituicao
+    public List<DadosListagemPostagemDTO> listarPostagensPorInstituicao(String nomeInstituicao){
+        String cnpjInstituicao = cadastroServiceClient.buscarInstituicaoPorNome(nomeInstituicao).cnpj();
+
+        if (cnpjInstituicao == null) {
+            String mensagemErro = "Para listar postagens por instituicao, o CNPJ é obrigatório";
+            log.error(mensagemErro);
+            throw new WebApplicationException(mensagemErro, Response.Status.BAD_REQUEST);
+        }
+
+        try {
+
+            List<Postagem> postagens = postagemRepository.findByInstituicao(cnpjInstituicao);
+
+            if (postagens.isEmpty()) {
+                log.warn("Nenhuma postagem encontrada");
+                return Collections.emptyList();
+            }
+
+            return postagens.stream()
+                    .map(DadosListagemPostagemDTO::new)
+                    .toList();
+        } catch (Exception e) {
+            log.error("Erro ao listar postagens", e);
+            throw new WebApplicationException("Erro ao listar postagens por instituição", Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

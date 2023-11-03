@@ -47,7 +47,7 @@ class PostagemServiceTest {
         postagem = new Postagem("Nova postagem!");
         postagem.setId(1L);
         dadosCadastroPostagemDTO = new DadosCadastroPostagemDTO("Nova postagem DTO!");
-        dadosAtualizacaoPostagemDTO = new DadosAtualizacaoPostagemDTO(1L,"Mensagem atualizada DTO!");
+        dadosAtualizacaoPostagemDTO = new DadosAtualizacaoPostagemDTO(1L, "Mensagem atualizada DTO!");
     }
 
     @Test
@@ -203,7 +203,7 @@ class PostagemServiceTest {
     }
 
     @Test
-    void deveLancarExcessaoAoInserirPostagemSemMensagem(){
+    void deveLancarExcessaoAoInserirPostagemSemMensagem() {
         // Dados de exemplo: Crie um DTO sem mensagem
         DadosCadastroPostagemDTO dadosCadastroPostagemDTO = new DadosCadastroPostagemDTO(null);
 
@@ -243,7 +243,7 @@ class PostagemServiceTest {
     }
 
     @Test
-    void deveAtualizarPostagemExistenteComSucesso(){
+    void deveAtualizarPostagemExistenteComSucesso() {
         // Entidade de exemplo
         when(postagemRepository.findByIdOptional(1L)).thenReturn(Optional.of(postagem));
 
@@ -252,9 +252,9 @@ class PostagemServiceTest {
 
         // Verifique se a postagem foi editada corretamente
         assertEquals(dadosAtualizacaoPostagemDTO.mensagem(), postagemEditada.getMensagem());
-        assertEquals(dadosAtualizacaoPostagemDTO.id(),postagemEditada.getId());
-        assertEquals(dadosAtualizacaoPostagemDTO.id(),postagem.getId());
-        assertNotEquals(dadosCadastroPostagemDTO.mensagem(),postagem.getMensagem());
+        assertEquals(dadosAtualizacaoPostagemDTO.id(), postagemEditada.getId());
+        assertEquals(dadosAtualizacaoPostagemDTO.id(), postagem.getId());
+        assertNotEquals(dadosCadastroPostagemDTO.mensagem(), postagem.getMensagem());
 
 
         // Verifique que o método persist() foi chamado no repositório com a entidade correta
@@ -262,7 +262,7 @@ class PostagemServiceTest {
     }
 
     @Test
-    void deveLancarExcessaoQuandoAtualizarMensagemEstiverComMensagemNula(){
+    void deveLancarExcessaoQuandoAtualizarMensagemEstiverComMensagemNula() {
         // Entidade de exemplo
         DadosAtualizacaoPostagemDTO postagemDTO = new DadosAtualizacaoPostagemDTO(1L, null);
 
@@ -280,7 +280,7 @@ class PostagemServiceTest {
     }
 
     @Test
-    void deveLancarExcessaoQuandoAtualizarMensagemEstiverComIdNulo(){
+    void deveLancarExcessaoQuandoAtualizarMensagemEstiverComIdNulo() {
         // Entidade de exemplo
         DadosAtualizacaoPostagemDTO postagemDTO = new DadosAtualizacaoPostagemDTO(null, "Nova Mensagem");
 
@@ -298,7 +298,7 @@ class PostagemServiceTest {
     }
 
     @Test
-    void deveLancarExcessaoQuandoPostagemNaoExistir(){
+    void deveLancarExcessaoQuandoPostagemNaoExistir() {
         // Simule que a postagem não foi encontrada com base no valor do postagemDTO.id()
         when(postagemRepository.findByIdOptional(dadosAtualizacaoPostagemDTO.id())).thenReturn(Optional.empty());
 
@@ -338,8 +338,9 @@ class PostagemServiceTest {
         verify(postagemRepository).persist(ArgumentMatchers.any(Postagem.class));
         verifyNoMoreInteractions(postagemRepository);
     }
+
     @Test
-    void deveDeletarPostagemComSucesso(){
+    void deveDeletarPostagemComSucesso() {
         // Simule o repositório retornando uma postagem válida ao buscar por ID
         when(postagemRepository.findByIdOptional(1L)).thenReturn(Optional.of(postagem));
 
@@ -358,7 +359,7 @@ class PostagemServiceTest {
     }
 
     @Test
-    void deveLancarExcessaoQuandoDeletarPostagemEstiverComIdNulo(){
+    void deveLancarExcessaoQuandoDeletarPostagemEstiverComIdNulo() {
 
         // Chame o método para editar a postagem
         WebApplicationException e = assertThrows(WebApplicationException.class, () -> {
@@ -372,8 +373,9 @@ class PostagemServiceTest {
         // Certifique-se de que o método persist() não tenha sido chamado no repositório
         verify(postagemRepository, never()).delete(ArgumentMatchers.any(Postagem.class));
     }
+
     @Test
-    void deveLancarExcessaoAoDeletarQuandoPostagemNaoExistir(){
+    void deveLancarExcessaoAoDeletarQuandoPostagemNaoExistir() {
         // Simule que a postagem não foi encontrada com base no valor do postagemDTO.id()
         when(postagemRepository.findByIdOptional(dadosAtualizacaoPostagemDTO.id())).thenReturn(Optional.empty());
 
@@ -412,4 +414,37 @@ class PostagemServiceTest {
         verify(postagemRepository).findByIdOptional(1L);
         verifyNoMoreInteractions(postagemRepository);
     }
+
+    @Test
+    void deveLancarExcessaoQuandoRepositorioFalharAoListarPostagens() {
+
+        // Simule o repositório retornando uma postagem válida ao buscar por ID
+        when(postagemRepository.listAll()).thenThrow(new RuntimeException("Erro interno ao listar postagens!"));
+
+        // Chame o método para editar a postagem
+        WebApplicationException e = assertThrows(WebApplicationException.class, () -> {
+            postagemService.listarTodasPostagens();
+        });
+
+        // Verifique se a exceção tem a mensagem e o status esperados
+        assertThat(e.getResponse().getStatus(), is(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()));
+        assertThat(e.getMessage(), is("Erro ao listar postagens"));
+    }
+
+    @Test
+    void deveLancarExcessaoQuandoRepositorioFalharAoBuscarPostagemPorId() {
+
+        // Simule o repositório retornando uma postagem válida ao buscar por ID
+        when(postagemRepository.findByIdOptional(1L)).thenThrow(new RuntimeException("Erro interno ao buscar postagem por id!"));
+
+        // Chame o método para editar a postagem
+        WebApplicationException e = assertThrows(WebApplicationException.class, () -> {
+            postagemService.buscarPostagemPorId(1L);
+        });
+
+        // Verifique se a exceção tem a mensagem e o status esperados
+        assertThat(e.getResponse().getStatus(), is(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()));
+        assertThat(e.getMessage(), is("Erro ao buscar postagem com id: 1"));
+    }
+
 }

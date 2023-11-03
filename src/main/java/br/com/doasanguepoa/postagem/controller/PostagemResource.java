@@ -48,6 +48,14 @@ public class PostagemResource {
         return postagemService.buscarPostagemPorId(id);
     }
 
+    @GET
+    @Path("/instituicao/{nomeInstituicao}")
+    @RolesAllowed({"USUARIO", "INSTITUICAO"})
+    public List<DadosListagemPostagemDTO> buscarPostagemPorNomeInstituicao(@PathParam String nomeInstituicao) {
+        log.info("Buscando postagem por nome da instituição {}", nomeInstituicao);
+        return postagemService.listarPostagensPorInstituicao(nomeInstituicao);
+    }
+
     @POST
     @Transactional
     @RolesAllowed({"INSTITUICAO"})

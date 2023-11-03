@@ -116,4 +116,15 @@ import static org.mockito.Mockito.*;
             assertEquals(Response.Status.NOT_FOUND.getStatusCode(), e.getResponse().getStatus());
         }
     }
+
+    @Test
+    void deletarPostagemTest() {
+        Postagem postagem = new Postagem("Test Post");
+        postagem.setId(1L);
+        // Criando uma postagem fictícia
+        lenient().when(postagemRepository.findById(1L)).thenReturn(postagem);
+
+        postagemResource.deletarPostagem(1L);
+        verify(postagemResource).deletarPostagem(1L);
+    }
 }
