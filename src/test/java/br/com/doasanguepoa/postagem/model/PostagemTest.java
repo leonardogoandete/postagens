@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
-import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
  class PostagemTest {
@@ -37,14 +36,6 @@ import static org.junit.jupiter.api.Assertions.*;
         String mensagem = "Mensagem original";
         Postagem postagem = new Postagem(mensagem);
         Instant timestampOriginal = postagem.getCreatedAt();
-        // Aguarde um curto período de tempo para simular uma atualização
-        try {
-            sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
 
         postagem.setUpdateAt(Instant.now());
 

@@ -27,9 +27,6 @@ import java.util.List;
         type = SecuritySchemeType.HTTP,
         bearerFormat = "JWT")
 public class PostagemResource {
-
-    //@Inject
-    //PostagemService postagemService;
     private PostagemService postagemService;
 
     public PostagemResource(PostagemService postagemService){
