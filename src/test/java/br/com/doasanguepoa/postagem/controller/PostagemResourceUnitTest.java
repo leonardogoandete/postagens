@@ -54,10 +54,14 @@ import static org.mockito.Mockito.*;
     void buscarPostagemPorIdTest() {
         Postagem postagem = new Postagem("Test Post");
         postagem.setId(1L);
+        // Criando uma postagem fictícia
         lenient().when(postagemRepository.findById(1L)).thenReturn(postagem);
 
-        assertEquals("Test Post", postagem.getMensagem());
-        assertEquals(1L, postagem.getId());
+        Postagem postagemEncontrada = postagemRepository.findById(1L);
+        assertEquals(postagemEncontrada.getId(), postagem.getId());
+
+        // Verifique se o método findById foi chamado apenas uma vez
+        verify(postagemRepository, times(1)).findById(1L);
     }
 
 
