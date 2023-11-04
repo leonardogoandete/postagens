@@ -31,4 +31,4 @@ scrape_configs:
     # para acessar um serviço externo ao container
     # https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach
     static_configs:
-      - targets: ["192.168.0.14:8081"]
+      - targets: ["postagens-app:8081"]
