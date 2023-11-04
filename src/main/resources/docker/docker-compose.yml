@@ -71,7 +71,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: hibernate
 
-  quarkus-app:
+  postagens-app:
     image: leogoandete/postagens:1.0.5-SNAPSHOT
     environment:
       QUARKUS_DATASOURCE_USERNAME: postgres
@@ -86,6 +86,7 @@ services:
     depends_on:
       - postgres
       - jaeger
+      - graylog
 
 networks:
   graylog:
