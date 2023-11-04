@@ -78,6 +78,11 @@ services:
       QUARKUS_DATASOURCE_PASSWORD: hibernate
       QUARKUS_DATASOURCE_DB_KIND: postgresql
       QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://postgres:5432/quarkus
+      #JAEGER ENV
+      QUARKUS_JAEGER_ENDPOINT: http://jaeger:4317
+      #GRAYLOG
+      QUARKUS_LOG_HANDLER_GELF_HOST: graylog
+      QUARKUS_LOG_HANDLER_GELF_PORT: 12201
     depends_on:
       - postgres
       - jaeger
