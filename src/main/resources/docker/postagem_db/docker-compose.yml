@@ -1,0 +1,18 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: quarkus
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: hibernate
+
+  quarkus-app:
+    image: leogoandete/postagens:1.0.5-SNAPSHOT
+    environment:
+      QUARKUS_DATASOURCE_USERNAME: postgres
+      QUARKUS_DATASOURCE_PASSWORD: hibernate
+      QUARKUS_DATASOURCE_DB_KIND: postgresql
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://postgres:5432/quarkus
+    depends_on:
+      - postgres

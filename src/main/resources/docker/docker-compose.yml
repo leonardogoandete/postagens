@@ -12,7 +12,6 @@ services:
     environment:
       - COLLECTOR_OTLP_ENABLED=true
 
-      
   elasticsearch:
     image: docker.io/elastic/elasticsearch:7.16.3
     ports:
@@ -20,13 +19,9 @@ services:
     environment:
       ES_JAVA_OPTS: "-Xms512m -Xmx512m" # Use half of the available RAM
       discovery.type: "single-node" # Disable production mode
-    networks:
-      - graylog
 
   mongo:
     image: mongo:5.0
-    networks:
-      - graylog
 
   graylog:
     image: graylog/graylog:5.1
@@ -40,8 +35,6 @@ services:
       GRAYLOG_PASSWORD_SECRET: "forpasswordencryption"
       # Password: admin
       GRAYLOG_ROOT_PASSWORD_SHA2: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
-    networks:
-      - graylog
     depends_on:
       - elasticsearch
       - mongo
@@ -70,6 +63,24 @@ services:
     restart: unless-stopped
     ports:
       - 3000:3000
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: quarkus
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: hibernate
+
+  quarkus-app:
+    image: leogoandete/postagens:1.0.5-SNAPSHOT
+    environment:
+      QUARKUS_DATASOURCE_USERNAME: postgres
+      QUARKUS_DATASOURCE_PASSWORD: hibernate
+      QUARKUS_DATASOURCE_DB_KIND: postgresql
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://postgres:5432/quarkus
+    depends_on:
+      - postgres
+      - jaeger
 
 networks:
   graylog:
