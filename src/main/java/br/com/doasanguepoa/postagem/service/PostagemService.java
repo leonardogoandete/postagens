@@ -22,6 +22,7 @@ import java.util.Optional;
 @ApplicationScoped
 @Transactional
 public class PostagemService {
+    //regras de negocio vão aqui
     @Inject
     @RestClient
     ICadastroServiceClient cadastroServiceClient;
@@ -43,7 +44,7 @@ public class PostagemService {
             return postagens;
         } catch (Exception e) {
             log.error("Erro ao listar postagens", e);
-            throw new WebApplicationException("Erro ao listar postagens", Response.Status.INTERNAL_SERVER_ERROR);
+            throw new WebApplicationException("Erro interno ao listar postagens", Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -72,9 +73,14 @@ public class PostagemService {
     }
 
     public Postagem inserirPostagem(Postagem postagem) {
-        postagemRepository.persist(postagem);
-        if (postagemRepository.isPersistent(postagem)) return postagem;
-        else return null;
+        try{
+            postagemRepository.persist(postagem);
+            if (postagemRepository.isPersistent(postagem)) return postagem;
+            else return null;
+        }catch (Exception e){
+            log.error("Erro ao cadastrar postagem!", e);
+            throw new WebApplicationException("Erro interno ao cadastrar postagem!", Response.Status.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public Postagem editarPostagemExistente(DadosAtualizacaoPostagemDTO postagemDTO) {

@@ -18,8 +18,11 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 //https://www.linkedin.com/pulse/tutorial-quarkus-simplificando-o-hibernate-panache-da-silva-melo/?originalSubdomain=pt
 @Slf4j
@@ -67,11 +70,10 @@ public class PostagemResource{
     @RolesAllowed({"USUARIO", "INSTITUICAO"})
     public Response buscarPostagemPorId(@PathParam Long id) {
         log.info("Buscando postagem por ID {}", id);
-        Optional<Postagem> postagem = postagemService.buscarPostagemPorId(id);
-        if (postagem.isEmpty()){
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return Response.status(Response.Status.CREATED).entity(postagemMapper.toDadosListagemPostagem(postagem.get())).build();
+        return postagemService.buscarPostagemPorId(id)
+                .map(postagemMapper::toDadosListagemPostagem)
+                .map(dadosListagemPostagemDTO -> Response.status(Response.Status.OK).entity(dadosListagemPostagemDTO))
+                .orElse(Response.status(Response.Status.NOT_FOUND)).build();
     }
 
     @GET
@@ -79,8 +81,13 @@ public class PostagemResource{
     @RolesAllowed({"USUARIO", "INSTITUICAO"})
     public Response buscarPostagemPorNomeInstituicao(@PathParam String nomeInstituicao) {
         log.info("Buscando postagem por nome da instituição {}", nomeInstituicao);
+
         List<DadosListagemPostagemDTO> postagens;
-        postagens = postagemMapper.toDadosListagemPostagem(postagemService.listarPostagensPorInstituicao(nomeInstituicao));
+        postagens = Optional.ofNullable(postagemService.listarPostagensPorInstituicao(nomeInstituicao))
+                .map(list -> list.stream()
+                        .map(postagemMapper::toDadosListagemPostagem)
+                        .toList())
+                .orElse(Collections.emptyList());
         return Response.status(Response.Status.OK).entity(postagens).build();
     }
 
