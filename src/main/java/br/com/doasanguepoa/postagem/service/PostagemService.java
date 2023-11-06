@@ -9,6 +9,8 @@ import br.com.doasanguepoa.postagem.repository.PostagemRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.ServerErrorException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
@@ -33,131 +35,91 @@ public class PostagemService {
     }
 
     public List<Postagem> listarTodasPostagens() {
-        try {
-            List<Postagem> postagens = postagemRepository.listAll();
 
-            if (postagens.isEmpty()) {
-                log.warn("Nenhuma postagem encontrada");
-                return Collections.emptyList();
-            }
+        List<Postagem> postagens = postagemRepository.listAll();
 
-            return postagens;
-        } catch (Exception e) {
-            log.error("Erro ao listar postagens", e);
-            throw new WebApplicationException("Erro interno ao listar postagens", Response.Status.INTERNAL_SERVER_ERROR);
+        if (postagens.isEmpty()) {
+            log.warn("Nenhuma postagem encontrada");
+            return Collections.emptyList();
         }
+        return postagens;
     }
 
     public Optional<Postagem> buscarPostagemPorId(Long id) {
         if (id == null) {
-            String mensagemErro = "Para buscar uma postagem com o ID, o ID é obrigatório";
-            log.error(mensagemErro);
-            throw new WebApplicationException(mensagemErro, Response.Status.BAD_REQUEST);
+            throw new IllegalArgumentException("O ID é obrigatório para buscar uma postagem.");
         }
 
-        try {
-
-            Optional<Postagem> optionalEntity = postagemRepository.findByIdOptional(id);
-            if (optionalEntity.isEmpty()) {
-                String mensagemErro = "Postagem com ID " + id + " inexistente.";
-                log.info(mensagemErro);
-                throw new WebApplicationException(mensagemErro, Response.Status.NOT_FOUND);
-            }
-
-            return optionalEntity;
-
-        } catch (Exception e) {
-            log.error("Erro ao buscar postagem com id: {}", id, e);
-            throw new WebApplicationException("Erro ao buscar postagem com id: " + id, Response.Status.INTERNAL_SERVER_ERROR);
+        Optional<Postagem> optionalEntity = postagemRepository.findByIdOptional(id);
+        if (optionalEntity.isEmpty()) {
+            log.info("Postagem com ID " + id + " inexistente.");
+            throw new NotFoundException("Postagem com ID " + id + " inexistente.");
         }
+        return optionalEntity;
     }
 
     public Postagem inserirPostagem(Postagem postagem) {
-        try{
-            postagemRepository.persist(postagem);
-            if (postagemRepository.isPersistent(postagem)) return postagem;
-            else return null;
-        }catch (Exception e){
-            log.error("Erro ao cadastrar postagem!", e);
-            throw new WebApplicationException("Erro interno ao cadastrar postagem!", Response.Status.INTERNAL_SERVER_ERROR);
+        if (postagem.getMensagem() == null) {
+            throw new IllegalArgumentException("A Mensagem é obrigatório para inserir a postagem");
         }
+        postagemRepository.persist(postagem);
+        return postagemRepository.isPersistent(postagem) ? postagem : null;
+
     }
 
     public Postagem editarPostagemExistente(DadosAtualizacaoPostagemDTO postagemDTO) {
         if (postagemDTO.mensagem() == null || postagemDTO.id() == null) {
-            String mensagemErro = "Para editar uma postagem, a mensagem e o ID são obrigatórios";
-            log.error(mensagemErro);
-            throw new WebApplicationException(mensagemErro, Response.Status.BAD_REQUEST);
+            log.error("Para editar uma postagem, a mensagem e o ID são obrigatórios");
+            throw new IllegalArgumentException("Para editar uma postagem, a mensagem e o ID são obrigatórios");
         }
 
         Optional<Postagem> optionalEntity = postagemRepository.findByIdOptional(postagemDTO.id());
         if (optionalEntity.isEmpty()) {
             String mensagemErro = "Postagem com ID " + postagemDTO.id() + " inexistente.";
             log.info(mensagemErro);
-            throw new WebApplicationException(mensagemErro, Response.Status.NOT_FOUND);
+            throw new NotFoundException("Postagem com ID " + postagemDTO.id() + " inexistente.");
         }
-        try {
-            Postagem entity = optionalEntity.get();
-            entity.setMensagem(postagemDTO.mensagem());
-            postagemRepository.persist(entity);
-            log.info("Atualizando postagem com id: {}", postagemDTO.id());
-            return entity;
-        } catch (Exception e) {
-            log.error("Erro ao atualizar postagem com id: {}", postagemDTO.id(), e);
-            throw new WebApplicationException("Erro ao atualizar postagem com id: " + postagemDTO.id(), Response.Status.INTERNAL_SERVER_ERROR);
-        }
+        Postagem entity = optionalEntity.get();
+        entity.setMensagem(postagemDTO.mensagem());
+        postagemRepository.persist(entity);
+        log.info("Atualizando postagem com id: {}", postagemDTO.id());
+        return entity;
+
     }
 
     public void excluirPostagemExistente(Long id) {
         if (id == null) {
-            String mensagemErro = "Para excluir uma postagem, o ID é obrigatório";
-            log.error(mensagemErro);
-            throw new WebApplicationException(mensagemErro, Response.Status.BAD_REQUEST);
+            throw new IllegalArgumentException("O ID é obrigatório para excluir uma postagem.");
         }
 
         Optional<Postagem> optionalEntity = postagemRepository.findByIdOptional(id);
 
         if (optionalEntity.isEmpty()) {
-            String mensagemErro = "Postagem com ID " + id + " não encontrada.";
-            log.info(mensagemErro);
-            throw new WebApplicationException(mensagemErro, Response.Status.NOT_FOUND);
+            log.info("Postagem com ID " + id + " não encontrada.");
+            throw new NotFoundException("Postagem com ID " + id + " não encontrada.");
         }
 
-        try {
-            Postagem entity = optionalEntity.get();
-            postagemRepository.delete(entity);
-        } catch (WebApplicationException e) {
-            // Você pode lidar com exceções específicas aqui, se necessário.
-            throw e;
-        } catch (Exception e) {
-            log.error("Erro interno ao deletar postagem com id: {}", id, e);
-            throw new WebApplicationException("Erro interno ao deletar postagem!", Response.Status.INTERNAL_SERVER_ERROR);
-        }
+        Postagem entity = optionalEntity.get();
+        postagemRepository.delete(entity);
+
     }
 
     //Listar postagem por instituicao
-    public List<Postagem> listarPostagensPorInstituicao(String nomeInstituicao){
+    public List<Postagem> listarPostagensPorInstituicao(String nomeInstituicao) {
         String cnpjInstituicao = cadastroServiceClient.buscarInstituicaoPorNome(nomeInstituicao).cnpj();
 
-        if (cnpjInstituicao == null) {
-            String mensagemErro = "Para listar postagens por instituicao, o CNPJ é obrigatório";
-            log.error(mensagemErro);
-            throw new WebApplicationException(mensagemErro, Response.Status.BAD_REQUEST);
+        if (nomeInstituicao == null) {
+            throw new IllegalArgumentException("Para listar postagens por instituicao, o CNPJ é obrigatório");
         }
 
-        try {
 
-            List<Postagem> postagens = postagemRepository.findByInstituicao(cnpjInstituicao);
+        List<Postagem> postagens = postagemRepository.findByInstituicao(cnpjInstituicao);
 
-            if (postagens.isEmpty()) {
-                log.warn("Nenhuma postagem encontrada");
-                return Collections.emptyList();
-            }
-
-            return postagens;
-        } catch (Exception e) {
-            log.error("Erro ao listar postagens", e);
-            throw new WebApplicationException("Erro ao listar postagens por instituição", Response.Status.INTERNAL_SERVER_ERROR);
+        if (postagens.isEmpty()) {
+            log.warn("Nenhuma postagem encontrada");
+            return Collections.emptyList();
         }
+
+        return postagens;
     }
 }
