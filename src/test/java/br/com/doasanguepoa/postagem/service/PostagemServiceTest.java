@@ -109,7 +109,7 @@ class PostagemServiceTest {
     public void testInserirPostagemComSucesso() {
         // Arrange
         DadosCadastroPostagemDTO postagemDTO = new DadosCadastroPostagemDTO("Mensagem");
-        Postagem postagem = new Postagem();
+        Postagem postagem = new Postagem(postagemDTO.mensagem());
         when(postagemRepository.isPersistent(postagem)).thenReturn(true);
 
         // Act

@@ -22,7 +22,6 @@ import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 //https://www.linkedin.com/pulse/tutorial-quarkus-simplificando-o-hibernate-panache-da-silva-melo/?originalSubdomain=pt
 @Slf4j
