@@ -8,6 +8,7 @@ import br.com.doasanguepoa.postagem.dto.postagem.DadosListagemPostagemDTO;
 
 import br.com.doasanguepoa.postagem.model.Postagem;
 import br.com.doasanguepoa.postagem.service.PostagemService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
@@ -49,7 +50,7 @@ public class PostagemResource{
 
     @POST
     @Transactional
-//    @RolesAllowed({"INSTITUICAO"})
+    @RolesAllowed({"INSTITUICAO"})
     public Response adicionarPostagem(@Valid DadosCadastroPostagemDTO dadosCadastroPostagemDTO) {
         log.info("Inserino nova postagem {}", dadosCadastroPostagemDTO);
         Postagem postagem = postagemMapper.toPostagem(dadosCadastroPostagemDTO);
@@ -63,7 +64,7 @@ public class PostagemResource{
 
     @GET
     @Path("/{id}")
-//    @RolesAllowed({"USUARIO", "INSTITUICAO"})
+    @RolesAllowed({"USUARIO", "INSTITUICAO"})
     public Response buscarPostagemPorId(@PathParam Long id) {
         log.info("Buscando postagem por ID {}", id);
         Optional<Postagem> postagem = postagemService.buscarPostagemPorId(id);
@@ -75,7 +76,7 @@ public class PostagemResource{
 
     @GET
     @Path("/instituicao/{nomeInstituicao}")
-    //@RolesAllowed({"USUARIO", "INSTITUICAO"})
+    @RolesAllowed({"USUARIO", "INSTITUICAO"})
     public Response buscarPostagemPorNomeInstituicao(@PathParam String nomeInstituicao) {
         log.info("Buscando postagem por nome da instituição {}", nomeInstituicao);
         List<DadosListagemPostagemDTO> postagens;
@@ -88,7 +89,7 @@ public class PostagemResource{
     @PUT
     //@Path("/{id}")
     @Transactional
-    //@RolesAllowed({"INSTITUICAO"})
+    @RolesAllowed({"INSTITUICAO"})
     public Response atualizarPostagem(@Valid DadosAtualizacaoPostagemDTO postagemDTO) {
         log.info("Atualizando postagem {}", postagemDTO.id());
         Postagem postagem = postagemService.editarPostagemExistente(postagemDTO);
@@ -98,7 +99,7 @@ public class PostagemResource{
     @DELETE
     @Path("/{id}")
     @Transactional
-//    @RolesAllowed({"ADMIN", "INSTITUICAO"})
+    @RolesAllowed({"ADMIN", "INSTITUICAO"})
     public Response deletarPostagem(@PathParam Long id) {
         log.info("Excluindo postagem com id {}", id);
         postagemService.excluirPostagemExistente(id);
