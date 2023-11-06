@@ -14,7 +14,7 @@ public interface PostagemMapper {
     DadosListagemPostagemDTO toDadosListagemPostagem(Postagem postagem);
     DadosAtualizacaoPostagemDTO toDadosAtualizacaoPostagem(Postagem postagem);
 
-    List<DadosListagemPostagemDTO> toDadosListagemPostagem(List<Postagem> postagems);
+    List<DadosListagemPostagemDTO> toDadosListagemPostagem(List<Postagem> postagens);
 
     DadosCadastroPostagemDTO toDadosCadastroPostagem(Postagem postagem);
 

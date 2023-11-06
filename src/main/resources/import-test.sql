@@ -1,0 +1,3 @@
+insert into postagens (id, mensagem, createdAt, updateAt) values(2, 'Sangue AB+', '2023-10-19 16:55:59.806000 +00:00', '2023-10-19 16:55:59 +00:00');
+insert into postagens (id, mensagem, createdAt, updateAt) values(3, 'Sangue O+', '2023-10-19 16:55:59.806000 +00:00', '2023-10-19 16:55:59 +00:00');
+insert into postagens (id, mensagem, createdAt, updateAt) values(4, 'Sangue A-', '2023-10-19 16:55:59.806000 +00:00', '2023-10-19 16:55:59 +00:00');
