@@ -8,6 +8,7 @@ import br.com.doasanguepoa.postagem.model.Postagem;
 import br.com.doasanguepoa.postagem.repository.PostagemRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
@@ -19,8 +20,8 @@ import java.util.Optional;
 
 @Slf4j
 @ApplicationScoped
+@Transactional
 public class PostagemService {
-
     @Inject
     @RestClient
     ICadastroServiceClient cadastroServiceClient;
@@ -30,11 +31,7 @@ public class PostagemService {
         this.postagemRepository = postagemRepository;
     }
 
-    public String buscarInstituicaoPorNome(String nomeInstituicao){
-        return cadastroServiceClient.buscarInstituicaoPorNome(nomeInstituicao).cnpj();
-    }
-
-    public List<DadosListagemPostagemDTO> listarTodasPostagens() {
+    public List<Postagem> listarTodasPostagens() {
         try {
             List<Postagem> postagens = postagemRepository.listAll();
 
@@ -43,16 +40,14 @@ public class PostagemService {
                 return Collections.emptyList();
             }
 
-            return postagens.stream()
-                    .map(DadosListagemPostagemDTO::new)
-                    .toList();
+            return postagens;
         } catch (Exception e) {
             log.error("Erro ao listar postagens", e);
             throw new WebApplicationException("Erro ao listar postagens", Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public Postagem buscarPostagemPorId(Long id) {
+    public Optional<Postagem> buscarPostagemPorId(Long id) {
         if (id == null) {
             String mensagemErro = "Para buscar uma postagem com o ID, o ID é obrigatório";
             log.error(mensagemErro);
@@ -68,7 +63,7 @@ public class PostagemService {
                 throw new WebApplicationException(mensagemErro, Response.Status.NOT_FOUND);
             }
 
-            return optionalEntity.get();
+            return optionalEntity;
 
         } catch (Exception e) {
             log.error("Erro ao buscar postagem com id: {}", id, e);
@@ -76,21 +71,10 @@ public class PostagemService {
         }
     }
 
-    public Response inserirPostagem(DadosCadastroPostagemDTO dadosCadastroPostagemDTO) {
-        if (dadosCadastroPostagemDTO.mensagem() == null) {
-            String mensagemErro = "Para inserir uma postagem, a mensagem é obrigatória";
-            log.error(mensagemErro);
-            throw new WebApplicationException(mensagemErro, Response.Status.BAD_REQUEST);
-        }
-
-        try {
-            Postagem postagem = new Postagem(dadosCadastroPostagemDTO.mensagem());
-            postagemRepository.persist(postagem);
-            return Response.status(Response.Status.NO_CONTENT).build();
-        } catch (Exception e) {
-            log.error("Erro ao adicionar postagem", e);
-            throw new WebApplicationException("Erro ao adicionar postagem", Response.Status.INTERNAL_SERVER_ERROR);
-        }
+    public Postagem inserirPostagem(Postagem postagem) {
+        postagemRepository.persist(postagem);
+        if (postagemRepository.isPersistent(postagem)) return postagem;
+        else return null;
     }
 
     public Postagem editarPostagemExistente(DadosAtualizacaoPostagemDTO postagemDTO) {
@@ -118,7 +102,7 @@ public class PostagemService {
         }
     }
 
-    public Response excluirPostagemExistente(Long id) {
+    public void excluirPostagemExistente(Long id) {
         if (id == null) {
             String mensagemErro = "Para excluir uma postagem, o ID é obrigatório";
             log.error(mensagemErro);
@@ -135,11 +119,7 @@ public class PostagemService {
 
         try {
             Postagem entity = optionalEntity.get();
-
-            log.info("Deletando postagem com id: {}", id);
             postagemRepository.delete(entity);
-
-            return Response.status(Response.Status.NO_CONTENT).build();
         } catch (WebApplicationException e) {
             // Você pode lidar com exceções específicas aqui, se necessário.
             throw e;
@@ -150,7 +130,7 @@ public class PostagemService {
     }
 
     //Listar postagem por instituicao
-    public List<DadosListagemPostagemDTO> listarPostagensPorInstituicao(String nomeInstituicao){
+    public List<Postagem> listarPostagensPorInstituicao(String nomeInstituicao){
         String cnpjInstituicao = cadastroServiceClient.buscarInstituicaoPorNome(nomeInstituicao).cnpj();
 
         if (cnpjInstituicao == null) {
@@ -168,9 +148,7 @@ public class PostagemService {
                 return Collections.emptyList();
             }
 
-            return postagens.stream()
-                    .map(DadosListagemPostagemDTO::new)
-                    .toList();
+            return postagens;
         } catch (Exception e) {
             log.error("Erro ao listar postagens", e);
             throw new WebApplicationException("Erro ao listar postagens por instituição", Response.Status.INTERNAL_SERVER_ERROR);
