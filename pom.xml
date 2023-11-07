@@ -136,14 +136,6 @@
       <version>4.5.1</version>
       <scope>test</scope>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok-maven-plugin -->
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok-maven-plugin</artifactId>
-      <version>1.18.20.0</version>
-      <scope>provided</scope>
-    </dependency>
-
   </dependencies>
   <build>
     <plugins>
@@ -259,19 +251,6 @@
                 <!-- other annotation processors -->
               </annotationProcessorPaths>
             </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok-maven-plugin</artifactId>
-            <version>1.18.20.0</version> <!-- Use a versão mais recente do plugin -->
-            <executions>
-              <execution>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>delombok</goal>
-                </goals>
-              </execution>
-            </executions>
           </plugin>
         </plugins>
       </build>
