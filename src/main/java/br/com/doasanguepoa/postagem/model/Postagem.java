@@ -9,6 +9,8 @@ import java.time.Instant;
 
 @Entity
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "postagens")
