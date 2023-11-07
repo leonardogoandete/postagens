@@ -85,4 +85,4 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build
-        run: ./mvnw install -Dquarkus.container-image.group=leogoandete -Dquarkus.container-image.push=true
+        run: ./mvnw install -Dquarkus.container-image.group=leogoandete -Dquarkus.container-image.tag=$GITHUB_REF_NAME -Dquarkus.container-image.push=true
