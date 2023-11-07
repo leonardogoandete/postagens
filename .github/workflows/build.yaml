@@ -67,8 +67,5 @@ jobs:
       - name: Build
         run: ./mvnw package -DskipTests -B
 
-      - name: Tag Docker Image
-        run: docker tag leogoandete/${{ env.PROJECT_NAME }}:${{ env.TAG }}
-
       - name: Push Docker Image
         run: docker push leogoandete/${{ env.PROJECT_NAME }}:${{ env.TAG }}
