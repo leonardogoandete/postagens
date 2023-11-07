@@ -32,9 +32,9 @@ import java.util.Optional;
         type = SecuritySchemeType.HTTP,
         bearerFormat = "JWT")
 public class PostagemResource{
-    private PostagemService postagemService;
+    private final PostagemService postagemService;
 
-    private PostagemMapper postagemMapper;
+    private final PostagemMapper postagemMapper;
 
     public PostagemResource(PostagemService postagemService, PostagemMapper postagemMapper){
         this.postagemService = postagemService;

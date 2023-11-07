@@ -103,7 +103,7 @@ class PostagemResourceTest {
 
     @Test
     void testDeletarPostagem() {
-        long postId = 2;
+        long postId = 4;
 
         Response response = given()
                 .pathParam("id", postId)
