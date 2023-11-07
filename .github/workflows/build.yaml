@@ -64,4 +64,4 @@ jobs:
         run: ./mvnw package -DskipTests -B
 
       - name: Push to packages
-        run: docker push ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.PROJECT_NAME }}:${{ env.PROJECT_VERSION }}
+        run: docker push docker.io/leogoandete/postagens:1.0.0
