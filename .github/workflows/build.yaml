@@ -61,7 +61,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build
-        run: quarkus build -Dquarkus.container-image.push=true
+        run: ./mvnw build -Dquarkus.container-image.push=true
 
 #      - name: Push to packages
 #        run: docker push docker.io/leogoandete/postagens:1.0.0
