@@ -5,7 +5,6 @@ import br.com.doasanguepoa.postagem.dto.postagem.DadosCadastroPostagemDTO;
 import br.com.doasanguepoa.postagem.model.Postagem;
 import br.com.doasanguepoa.postagem.repository.PostagemRepository;
 import jakarta.ws.rs.NotFoundException;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,7 +27,7 @@ class PostagemServiceTest {
     private PostagemRepository postagemRepository;
 
     @Test
-    public void testListarTodasPostagensComSucesso() {
+    void testListarTodasPostagensComSucesso() {
         // Arrange
         when(postagemRepository.listAll()).thenReturn(Collections.singletonList(new Postagem()));
 
@@ -41,7 +40,7 @@ class PostagemServiceTest {
 
 
     @Test
-    public void testListarPostagemComFalhaNoRepositorioDeveLancarRuntimeException() {
+    void testListarPostagemComFalhaNoRepositorioDeveLancarRuntimeException() {
         // Arrange
         when(postagemRepository.listAll()).thenThrow(new RuntimeException("Falha ao listar as postagens no repositório"));
 
@@ -50,7 +49,7 @@ class PostagemServiceTest {
     }
 
     @Test
-    public void testListarPostagemComListaVaziaComSucesso() {
+    void testListarPostagemComListaVaziaComSucesso() {
         // Arrange
         when(postagemRepository.listAll()).thenReturn(Collections.emptyList());
 
@@ -62,7 +61,7 @@ class PostagemServiceTest {
     }
 
     @Test
-    public void testBuscarPostagemPorIdComSucesso() {
+    void testBuscarPostagemPorIdComSucesso() {
         // Arrange
         Long id = 1L;
         Postagem postagem = new Postagem();
@@ -76,7 +75,7 @@ class PostagemServiceTest {
     }
 
     @Test
-    public void testBuscarPostagemPorIdComIdVazio() {
+    void testBuscarPostagemPorIdComIdVazio() {
         // Arrange
         Long id = null;
 
@@ -85,7 +84,7 @@ class PostagemServiceTest {
     }
 
     @Test
-    public void testBuscarPostagemInexistenteDeveLancarNotFoundException() {
+    void testBuscarPostagemInexistenteDeveLancarNotFoundException() {
         // Arrange
         Long id = 999L;
         when(postagemRepository.findByIdOptional(id)).thenReturn(Optional.empty());
@@ -95,7 +94,7 @@ class PostagemServiceTest {
     }
 
     @Test
-    public void testBuscarPostagemComIdFalhaNoRepositorioDeveLancarRuntimeException() {
+    void testBuscarPostagemComIdFalhaNoRepositorioDeveLancarRuntimeException() {
         // Arrange
         Long id = 1L;
         when(postagemRepository.findByIdOptional(id)).thenThrow(new RuntimeException("Falha ao buscar a postagem no repositório"));
@@ -105,7 +104,7 @@ class PostagemServiceTest {
     }
 
     @Test
-    public void testInserirPostagemComSucesso() {
+    void testInserirPostagemComSucesso() {
         // Arrange
         DadosCadastroPostagemDTO postagemDTO = new DadosCadastroPostagemDTO("Mensagem");
         Postagem postagem = new Postagem(postagemDTO.mensagem());
@@ -119,7 +118,7 @@ class PostagemServiceTest {
     }
 
     @Test
-    public void testInserirPostagemComMensagemNulaDeveLancarIllegalArgumentException() {
+    void testInserirPostagemComMensagemNulaDeveLancarIllegalArgumentException() {
         // Arrange
         Postagem postagem = new Postagem();
         postagem.setMensagem(null);
@@ -129,7 +128,7 @@ class PostagemServiceTest {
     }
 
     @Test
-    public void testInserirPostagemFalhaNoRepositorio() {
+    void testInserirPostagemFalhaNoRepositorio() {
         // Arrange
         Postagem postagem = new Postagem("Mensagem");
         when(postagemRepository.isPersistent(postagem)).thenReturn(false);
@@ -140,9 +139,9 @@ class PostagemServiceTest {
     }
 
     @Test
-    public void testEditarPostagemExistenteComSucesso() {
+    void testEditarPostagemExistenteComSucesso() {
         // Arrange
-        DadosAtualizacaoPostagemDTO postagemDTO = new DadosAtualizacaoPostagemDTO(1L,"Mensagem");
+        DadosAtualizacaoPostagemDTO postagemDTO = new DadosAtualizacaoPostagemDTO(1L, "Mensagem");
         Postagem postagem = new Postagem();
         when(postagemRepository.findByIdOptional(postagemDTO.id())).thenReturn(Optional.of(postagem));
 
@@ -154,27 +153,27 @@ class PostagemServiceTest {
     }
 
     @Test
-    public void testEditarPostagemComIdNuloDeveLancarIllegalArgumentException() {
+    void testEditarPostagemComIdNuloDeveLancarIllegalArgumentException() {
         // Arrange
-        DadosAtualizacaoPostagemDTO postagemDTO = new DadosAtualizacaoPostagemDTO(null,"Mensagem");
+        DadosAtualizacaoPostagemDTO postagemDTO = new DadosAtualizacaoPostagemDTO(null, "Mensagem");
 
         // Act & Assert
         assertThrows(IllegalArgumentException.class, () -> postagemService.editarPostagemExistente(postagemDTO));
     }
 
     @Test
-    public void testEditarPostagemComMensagemNulaDeveLancarIllegalArgumentException() {
+    void testEditarPostagemComMensagemNulaDeveLancarIllegalArgumentException() {
         // Arrange
-        DadosAtualizacaoPostagemDTO postagemDTO = new DadosAtualizacaoPostagemDTO(1L,null);
+        DadosAtualizacaoPostagemDTO postagemDTO = new DadosAtualizacaoPostagemDTO(1L, null);
 
         // Act & Assert
         assertThrows(IllegalArgumentException.class, () -> postagemService.editarPostagemExistente(postagemDTO));
     }
 
     @Test
-    public void testEditarPostagemInexistenteDeveLancarNotFoundException() {
+    void testEditarPostagemInexistenteDeveLancarNotFoundException() {
         // Arrange
-        DadosAtualizacaoPostagemDTO postagemDTO = new DadosAtualizacaoPostagemDTO(999L,"Mensagem");
+        DadosAtualizacaoPostagemDTO postagemDTO = new DadosAtualizacaoPostagemDTO(999L, "Mensagem");
 
         when(postagemRepository.findByIdOptional(postagemDTO.id())).thenReturn(Optional.empty());
 
@@ -183,7 +182,7 @@ class PostagemServiceTest {
     }
 
     @Test
-    public void testExcluirPostagemExistenteComSucesso() {
+    void testExcluirPostagemExistenteComSucesso() {
         // Arrange
         Long id = 1L;
         Postagem postagem = new Postagem();
@@ -197,7 +196,7 @@ class PostagemServiceTest {
     }
 
     @Test
-    public void testExcluirPostagemComIdNuloDeveLancarIllegalArgumentException() {
+    void testExcluirPostagemComIdNuloDeveLancarIllegalArgumentException() {
         // Arrange
         Long id = null;
 
@@ -206,7 +205,7 @@ class PostagemServiceTest {
     }
 
     @Test
-    public void testExcluirPostagemInexistenteDeveLancarNotFoundException() {
+    void testExcluirPostagemInexistenteDeveLancarNotFoundException() {
         // Arrange
         Long id = 1L;
         when(postagemRepository.findByIdOptional(id)).thenReturn(Optional.empty());

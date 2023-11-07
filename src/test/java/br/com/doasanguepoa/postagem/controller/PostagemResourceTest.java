@@ -81,7 +81,7 @@ class PostagemResourceTest {
     }
 
     @Test
-    public void testAtualizarPostagem() {
+    void testAtualizarPostagem() {
         DadosAtualizacaoPostagemDTO dadosAtualizacaoPostagemDTO = new DadosAtualizacaoPostagemDTO(2L,"Nova mensagem para a postagem 2");
 
         Response response = given()

@@ -20,6 +20,8 @@ import java.util.logging.Logger;
 public class PostagemService {
     //regras de negocio vão aqui
     private static final Logger logger = Logger.getLogger(PostagemService.class.getName());
+    private static final String MSG_INICIAL = "Postagem com ID ";
+    private static final String MSG_INEXISTENTE = " inexistente.";
     @Inject
     @RestClient
     ICadastroServiceClient cadastroServiceClient;
@@ -48,7 +50,7 @@ public class PostagemService {
         Optional<Postagem> optionalEntity = postagemRepository.findByIdOptional(id);
         if (optionalEntity.isEmpty()) {
             logger.log(Level.INFO,"Postagem com ID {} inexistente.", id);
-            throw new NotFoundException("Postagem com ID " + id + " inexistente.");
+            throw new NotFoundException(MSG_INICIAL + id + MSG_INEXISTENTE);
         }
         return optionalEntity;
     }
@@ -64,16 +66,16 @@ public class PostagemService {
     }
 
     public Postagem editarPostagemExistente(DadosAtualizacaoPostagemDTO postagemDTO) {
-        if (postagemDTO.mensagem() == null || postagemDTO.id() == null) {
+        if (postagemDTO.mensagem() == null) {
             logger.log(Level.WARNING,"Para editar uma postagem, a mensagem e o ID são obrigatórios");
             throw new IllegalArgumentException("Para editar uma postagem, a mensagem e o ID são obrigatórios");
         }
 
         Optional<Postagem> optionalEntity = postagemRepository.findByIdOptional(postagemDTO.id());
         if (optionalEntity.isEmpty()) {
-            String mensagemErro = "Postagem com ID " + postagemDTO.id() + " inexistente.";
+            String mensagemErro = MSG_INICIAL + postagemDTO.id() + MSG_INEXISTENTE;
             logger.log(Level.INFO,mensagemErro);
-            throw new NotFoundException("Postagem com ID " + postagemDTO.id() + " inexistente.");
+            throw new NotFoundException(MSG_INICIAL + postagemDTO.id() + MSG_INEXISTENTE);
         }
         Postagem entity = optionalEntity.get();
         entity.setMensagem(postagemDTO.mensagem());
@@ -91,8 +93,9 @@ public class PostagemService {
         Optional<Postagem> optionalEntity = postagemRepository.findByIdOptional(id);
 
         if (optionalEntity.isEmpty()) {
-            logger.log(Level.INFO,"Postagem com ID " + id + " não encontrada.");
-            throw new NotFoundException("Postagem com ID " + id + " não encontrada.");
+            String msg = MSG_INICIAL.concat(id.toString()).concat(" não encontrada.");
+            logger.log(Level.INFO,msg);
+            throw new NotFoundException(MSG_INICIAL + id + " não encontrada.");
         }
 
         Postagem entity = optionalEntity.get();
