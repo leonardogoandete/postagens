@@ -9,7 +9,6 @@ import java.time.Instant;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "postagens")
 public class Postagem {
@@ -18,7 +17,6 @@ public class Postagem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Getter
     private String mensagem;
 
     @CreationTimestamp
@@ -26,10 +24,25 @@ public class Postagem {
     @UpdateTimestamp
     private Instant updateAt;
 
+    public Postagem(){}
     public Postagem(String mensagem) {
         this.mensagem = mensagem;
         this.createdAt = Instant.now();
         this.updateAt = Instant.now();
+    }
+
+    public Postagem(String mensagem, Instant createdAt, Instant updateAt) {
+        this.mensagem = mensagem;
+        this.createdAt = createdAt;
+        this.updateAt = updateAt;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getMensagem() {
@@ -38,5 +51,21 @@ public class Postagem {
 
     public void setMensagem(String mensagem) {
         this.mensagem = mensagem;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getUpdateAt() {
+        return updateAt;
+    }
+
+    public void setUpdateAt(Instant updateAt) {
+        this.updateAt = updateAt;
     }
 }
