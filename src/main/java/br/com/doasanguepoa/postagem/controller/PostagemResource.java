@@ -42,7 +42,7 @@ public class PostagemResource{
     }
 
     @GET
-    //@RolesAllowed({ "USUARIO","INSTITUICAO" })
+    @RolesAllowed({ "USUARIO","INSTITUICAO" })
     public Response listarPostagens() {
         log.info("Buscando todas as postagens!");
         List<DadosListagemPostagemDTO> postagens;
