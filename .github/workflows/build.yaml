@@ -7,7 +7,7 @@ on:
     types: [ published ]
 
 jobs:
-  build:
+  build-and-analyze:
     name: Build and analyze
     runs-on: ubuntu-latest
     steps:
@@ -43,7 +43,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=leonardogoandete_postagens -Pcoverage
 
-  build-and-push-image:
+  gerando-imagem-docker:
     if: github.event_name == 'release' && github.event.action == 'published'
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
@@ -52,19 +52,14 @@ jobs:
       - name: Checkout gh-repo
         uses: actions/checkout@v3
 
-      - name: GitHub Tag Name example
-        run: |
-            echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
-            echo "Tag name from github.ref_name: ${{  github.ref_name }}"
-
-      - name: start minikube
+      - name: Instalação do Minikube
         id: minikube
         uses: medyagh/setup-minikube@latest
 
       - name: Definindo o Minikube como Container Registry local
         run: eval $(minikube -p minikube docker-env)
 
-      - name: Set up JDK 17
+      - name: Configurando JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: 17
@@ -72,17 +67,14 @@ jobs:
           cache: maven
 
       - name: Gerando a imagem docker
-        run: ./mvnw package -Dquarkus.container-image.tag=$GITHUB_REF_NAME -Dquarkus.container-image.build=true
+        run: ./mvnw package -Dquarkus.container-image.tag=$GITHUB_REF_NAME -Dquarkus.container-image.group=${{ secrets.DOCKER_USERNAME }} -Dquarkus.container-image.build=true
 
-      - name: Listando imagem docker
-        run: docker image ls
-
-      - name: Log in to the Container registry
+      - name: Autenticando no docker registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build
-        run: ./mvnw install -Dquarkus.container-image.group=leogoandete -Dquarkus.container-image.tag=$GITHUB_REF_NAME -Dquarkus.container-image.push=true
+      - name: Enviando a imagem para o Dockerhub
+        run: ./mvnw install -Dquarkus.container-image.group=${{ secrets.DOCKER_USERNAME }} -Dquarkus.container-image.tag=$GITHUB_REF_NAME -Dquarkus.container-image.push=true
