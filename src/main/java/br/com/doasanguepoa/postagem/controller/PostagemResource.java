@@ -10,7 +10,6 @@ import br.com.doasanguepoa.postagem.model.Postagem;
 import br.com.doasanguepoa.postagem.service.PostagemService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.core.Response;
-import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 import jakarta.transaction.Transactional;
@@ -22,9 +21,11 @@ import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //https://www.linkedin.com/pulse/tutorial-quarkus-simplificando-o-hibernate-panache-da-silva-melo/?originalSubdomain=pt
-@Slf4j
+
 @Path("/postagens")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -32,6 +33,7 @@ import java.util.Optional;
         type = SecuritySchemeType.HTTP,
         bearerFormat = "JWT")
 public class PostagemResource{
+    private static final Logger logger = Logger.getLogger(PostagemResource.class.getName());
     private final PostagemService postagemService;
 
     private final PostagemMapper postagemMapper;
@@ -44,7 +46,7 @@ public class PostagemResource{
     @GET
     @RolesAllowed({ "USUARIO","INSTITUICAO" })
     public Response listarPostagens() {
-        log.info("Buscando todas as postagens!");
+        logger.info("Buscando todas as postagens!");
         List<DadosListagemPostagemDTO> postagens;
         postagens = postagemMapper.toDadosListagemPostagem(postagemService.listarTodasPostagens());
         return Response.status(Response.Status.OK).entity(postagens).build();
@@ -54,7 +56,7 @@ public class PostagemResource{
     @Transactional
     @RolesAllowed({"INSTITUICAO"})
     public Response adicionarPostagem(@Valid DadosCadastroPostagemDTO dadosCadastroPostagemDTO) {
-        log.info("Inserino nova postagem {}", dadosCadastroPostagemDTO);
+        logger.log(Level.INFO,"Inserino nova postagem {}", dadosCadastroPostagemDTO);
         Postagem postagem = postagemMapper.toPostagem(dadosCadastroPostagemDTO);
         Postagem postagemSalva = postagemService.inserirPostagem(postagem);
         DadosListagemPostagemDTO dadosListagemPostagemDTO = postagemMapper.toDadosListagemPostagem(postagemSalva);
@@ -68,7 +70,7 @@ public class PostagemResource{
     @Path("/{id}")
     @RolesAllowed({"USUARIO", "INSTITUICAO"})
     public Response buscarPostagemPorId(@PathParam Long id) {
-        log.info("Buscando postagem por ID {}", id);
+        logger.log(Level.INFO,"Buscando postagem por ID {}", id);
         return postagemService.buscarPostagemPorId(id)
                 .map(postagemMapper::toDadosListagemPostagem)
                 .map(dadosListagemPostagemDTO -> Response.status(Response.Status.OK).entity(dadosListagemPostagemDTO))
@@ -79,7 +81,7 @@ public class PostagemResource{
     @Path("/instituicao/{nomeInstituicao}")
     @RolesAllowed({"USUARIO", "INSTITUICAO"})
     public Response buscarPostagemPorNomeInstituicao(@PathParam String nomeInstituicao) {
-        log.info("Buscando postagem por nome da instituição {}", nomeInstituicao);
+        logger.log(Level.INFO,"Buscando postagem por nome da instituição {}", nomeInstituicao);
 
         List<DadosListagemPostagemDTO> postagens;
         postagens = Optional.ofNullable(postagemService.listarPostagensPorInstituicao(nomeInstituicao))
@@ -97,7 +99,7 @@ public class PostagemResource{
     @Transactional
     @RolesAllowed({"INSTITUICAO"})
     public Response atualizarPostagem(@Valid DadosAtualizacaoPostagemDTO postagemDTO) {
-        log.info("Atualizando postagem {}", postagemDTO.id());
+        logger.log(Level.INFO,"Atualizando postagem {}", postagemDTO.id());
         Postagem postagem = postagemService.editarPostagemExistente(postagemDTO);
         return Response.status(Response.Status.OK).entity(postagemMapper.toDadosListagemPostagem(postagem)).build();
     }
@@ -107,7 +109,7 @@ public class PostagemResource{
     @Transactional
     @RolesAllowed({"ADMIN", "INSTITUICAO"})
     public Response deletarPostagem(@PathParam Long id) {
-        log.info("Excluindo postagem com id {}", id);
+        logger.log(Level.INFO,"Excluindo postagem com id {}", id);
         postagemService.excluirPostagemExistente(id);
         return Response.status(Response.Status.NO_CONTENT).build();
     }

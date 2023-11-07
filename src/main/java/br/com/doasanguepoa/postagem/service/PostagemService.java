@@ -2,29 +2,24 @@ package br.com.doasanguepoa.postagem.service;
 
 import br.com.doasanguepoa.postagem.cliente.ICadastroServiceClient;
 import br.com.doasanguepoa.postagem.dto.postagem.DadosAtualizacaoPostagemDTO;
-import br.com.doasanguepoa.postagem.dto.postagem.DadosCadastroPostagemDTO;
-import br.com.doasanguepoa.postagem.dto.postagem.DadosListagemPostagemDTO;
 import br.com.doasanguepoa.postagem.model.Postagem;
 import br.com.doasanguepoa.postagem.repository.PostagemRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.ServerErrorException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-@Slf4j
 @ApplicationScoped
 @Transactional
 public class PostagemService {
     //regras de negocio vão aqui
+    private static final Logger logger = Logger.getLogger(PostagemService.class.getName());
     @Inject
     @RestClient
     ICadastroServiceClient cadastroServiceClient;
@@ -39,7 +34,7 @@ public class PostagemService {
         List<Postagem> postagens = postagemRepository.listAll();
 
         if (postagens.isEmpty()) {
-            log.warn("Nenhuma postagem encontrada");
+            logger.log(Level.WARNING,"Nenhuma postagem encontrada");
             return Collections.emptyList();
         }
         return postagens;
@@ -52,7 +47,7 @@ public class PostagemService {
 
         Optional<Postagem> optionalEntity = postagemRepository.findByIdOptional(id);
         if (optionalEntity.isEmpty()) {
-            log.info("Postagem com ID " + id + " inexistente.");
+            logger.log(Level.INFO,"Postagem com ID {} inexistente.", id);
             throw new NotFoundException("Postagem com ID " + id + " inexistente.");
         }
         return optionalEntity;
@@ -70,20 +65,20 @@ public class PostagemService {
 
     public Postagem editarPostagemExistente(DadosAtualizacaoPostagemDTO postagemDTO) {
         if (postagemDTO.mensagem() == null || postagemDTO.id() == null) {
-            log.error("Para editar uma postagem, a mensagem e o ID são obrigatórios");
+            logger.log(Level.WARNING,"Para editar uma postagem, a mensagem e o ID são obrigatórios");
             throw new IllegalArgumentException("Para editar uma postagem, a mensagem e o ID são obrigatórios");
         }
 
         Optional<Postagem> optionalEntity = postagemRepository.findByIdOptional(postagemDTO.id());
         if (optionalEntity.isEmpty()) {
             String mensagemErro = "Postagem com ID " + postagemDTO.id() + " inexistente.";
-            log.info(mensagemErro);
+            logger.log(Level.INFO,mensagemErro);
             throw new NotFoundException("Postagem com ID " + postagemDTO.id() + " inexistente.");
         }
         Postagem entity = optionalEntity.get();
         entity.setMensagem(postagemDTO.mensagem());
         postagemRepository.persist(entity);
-        log.info("Atualizando postagem com id: {}", postagemDTO.id());
+        logger.log(Level.INFO,"Atualizando postagem com id: {}", postagemDTO.id());
         return entity;
 
     }
@@ -96,7 +91,7 @@ public class PostagemService {
         Optional<Postagem> optionalEntity = postagemRepository.findByIdOptional(id);
 
         if (optionalEntity.isEmpty()) {
-            log.info("Postagem com ID " + id + " não encontrada.");
+            logger.log(Level.INFO,"Postagem com ID " + id + " não encontrada.");
             throw new NotFoundException("Postagem com ID " + id + " não encontrada.");
         }
 
@@ -118,7 +113,7 @@ public class PostagemService {
         List<Postagem> postagens = postagemRepository.findByInstituicao(cnpjInstituicao);
 
         if (postagens.isEmpty()) {
-            log.warn("Nenhuma postagem encontrada");
+            logger.log(Level.WARNING,"Nenhuma postagem encontrada");
             return Collections.emptyList();
         }
 
