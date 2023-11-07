@@ -60,6 +60,12 @@ jobs:
           distribution: temurin
           cache: maven
 
+      - name: Gerando a imagem docker
+        run: ./mvnw package -Dquarkus.container-image.build=true
+
+      - name: Listando imagem docker
+        run: docker image ls
+
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
@@ -68,4 +74,4 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build
-        run: ./mvnw install -Dquarkus.container-image.push=true
+        run: ./mvnw install -Dquarkus.container-image.group=leogoandete -Dquarkus.container-image.push=true
