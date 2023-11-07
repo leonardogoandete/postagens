@@ -59,6 +59,7 @@ public class PostagemService {
     }
 
     public Postagem inserirPostagem(Postagem postagem) {
+        //TO-DO pegar do JWT o CNPJ da instituicao
         if (postagem.getMensagem() == null) {
             throw new IllegalArgumentException("A Mensagem é obrigatório para inserir a postagem");
         }
@@ -106,6 +107,7 @@ public class PostagemService {
 
     //Listar postagem por instituicao
     public List<Postagem> listarPostagensPorInstituicao(String nomeInstituicao) {
+        //TO-DO definir dono da postagem usando o CNPJ da instituicao
         String cnpjInstituicao = cadastroServiceClient.buscarInstituicaoPorNome(nomeInstituicao).cnpj();
 
         if (nomeInstituicao == null) {
