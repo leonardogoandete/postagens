@@ -44,7 +44,7 @@ jobs:
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      PROJECT_NAME: postagens-api
+      PROJECT_NAME: postagens
 
     steps:
       - name: Checkout gh-repo
@@ -67,7 +67,7 @@ jobs:
         run: ./mvnw package -DskipTests -B
 
       - name: Tag Docker Image
-        run: docker tag ${{ env.PROJECT_NAME }}:${{ github.sha }} ${{ env.PROJECT_NAME }}
+        run: docker tag leogoandete/${{ env.PROJECT_NAME }}:${{ github.sha }} ${{ env.PROJECT_NAME }}
 
       - name: Push Docker Image
-        run: docker push ${{ env.PROJECT_NAME }}
+        run: docker push leogoandete/${{ env.PROJECT_NAME }}
