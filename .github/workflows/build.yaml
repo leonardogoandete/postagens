@@ -69,6 +69,9 @@ jobs:
       - name: Gerando a imagem docker
         run: ./mvnw package -Dquarkus.container-image.tag=$GITHUB_REF_NAME -Dquarkus.container-image.group=${{ secrets.DOCKER_USERNAME }} -Dquarkus.container-image.build=true
 
+      - name: Listando imagem docker
+        run: docker image ls
+
       - name: Autenticando no docker registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
