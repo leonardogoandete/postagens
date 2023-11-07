@@ -6,10 +6,26 @@ import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
 
- class PostagemTest {
+class PostagemTest {
 
     @Test
-     void testConstrutorEPropriedades() {
+    void testConstrutorEPropriedadesComDataCriacaoEDataAtualizacao() {
+        String mensagem = "Teste de mensagem";
+        Instant createdAt = Instant.now();
+        Instant updateAt = Instant.now().plusSeconds(200);
+        Postagem postagem = new Postagem(mensagem,createdAt,updateAt);
+        postagem.setId(1L);
+
+        assertNotNull(postagem.getId());
+        assertEquals(mensagem, postagem.getMensagem());
+        assertEquals(createdAt, postagem.getCreatedAt());
+        assertEquals(updateAt, postagem.getUpdateAt());
+        assertNotNull(postagem.getCreatedAt());
+        assertNotNull(postagem.getUpdateAt());
+    }
+
+    @Test
+    void testConstrutorEPropriedades() {
         String mensagem = "Teste de mensagem";
         Postagem postagem = new Postagem(mensagem);
         postagem.setId(1L);
@@ -21,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.*;
     }
 
     @Test
-     void testAtualizacaoDaMensagem() {
+    void testAtualizacaoDaMensagem() {
         String mensagemOriginal = "Mensagem original";
         Postagem postagem = new Postagem(mensagemOriginal);
 
@@ -32,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.*;
     }
 
     @Test
-     void testAtualizacaoDoTimestamp() {
+    void testAtualizacaoDoTimestamp() {
         String mensagem = "Mensagem original";
         Postagem postagem = new Postagem(mensagem);
         Instant timestampOriginal = postagem.getCreatedAt();
@@ -45,7 +61,7 @@ import static org.junit.jupiter.api.Assertions.*;
     }
 
     @Test
-     void testIdNaoNulo() {
+    void testIdNaoNulo() {
         String mensagem = "Mensagem de teste";
         Postagem postagem = new Postagem(mensagem);
         postagem.setId(2L);
