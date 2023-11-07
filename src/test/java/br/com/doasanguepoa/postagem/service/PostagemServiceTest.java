@@ -153,12 +153,12 @@ class PostagemServiceTest {
     }
 
     @Test
-    void testEditarPostagemComIdNuloDeveLancarIllegalArgumentException() {
+    void testEditarPostagemComIdNuloDeveLancarNotFoundException() {
         // Arrange
         DadosAtualizacaoPostagemDTO postagemDTO = new DadosAtualizacaoPostagemDTO(null, "Mensagem");
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> postagemService.editarPostagemExistente(postagemDTO));
+        assertThrows(NotFoundException.class, () -> postagemService.editarPostagemExistente(postagemDTO));
     }
 
     @Test

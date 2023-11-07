@@ -67,8 +67,8 @@ public class PostagemService {
 
     public Postagem editarPostagemExistente(DadosAtualizacaoPostagemDTO postagemDTO) {
         if (postagemDTO.mensagem() == null) {
-            logger.log(Level.WARNING,"Para editar uma postagem, a mensagem e o ID são obrigatórios");
-            throw new IllegalArgumentException("Para editar uma postagem, a mensagem e o ID são obrigatórios");
+            logger.log(Level.WARNING, "Para editar uma postagem, a mensagem é obrigatórios");
+            throw new IllegalArgumentException("Para editar uma postagem, a mensagem é obrigatórios");
         }
 
         Optional<Postagem> optionalEntity = postagemRepository.findByIdOptional(postagemDTO.id());
