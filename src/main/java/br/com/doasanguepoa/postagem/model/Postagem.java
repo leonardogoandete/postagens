@@ -8,9 +8,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.Instant;
 
 @Entity
-@Data
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "postagens")
@@ -31,5 +28,13 @@ public class Postagem {
         this.mensagem = mensagem;
         this.createdAt = Instant.now();
         this.updateAt = Instant.now();
+    }
+
+    public String getMensagem() {
+        return mensagem;
+    }
+
+    public void setMensagem(String mensagem) {
+        this.mensagem = mensagem;
     }
 }
