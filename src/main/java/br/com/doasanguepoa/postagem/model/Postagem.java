@@ -28,12 +28,14 @@ public class Postagem {
 
     public Postagem(){}
     public Postagem(String mensagem, String cnpj) {
+        this.cnpj = cnpj;
         this.mensagem = mensagem;
         this.createdAt = Instant.now();
         this.updateAt = Instant.now();
     }
 
     public Postagem(String mensagem, String cnpj, Instant createdAt, Instant updateAt) {
+        this.cnpj = cnpj;
         this.mensagem = mensagem;
         this.createdAt = createdAt;
         this.updateAt = updateAt;

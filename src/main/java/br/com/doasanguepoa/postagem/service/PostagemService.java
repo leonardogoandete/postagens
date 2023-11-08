@@ -1,14 +1,12 @@
 package br.com.doasanguepoa.postagem.service;
 
-import br.com.doasanguepoa.postagem.cliente.ICadastroServiceClient;
+
 import br.com.doasanguepoa.postagem.dto.postagem.DadosAtualizacaoPostagemDTO;
 import br.com.doasanguepoa.postagem.model.Postagem;
 import br.com.doasanguepoa.postagem.repository.PostagemRepository;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -22,9 +20,6 @@ public class PostagemService {
     private static final Logger logger = Logger.getLogger(PostagemService.class.getName());
     private static final String MSG_INICIAL = "Postagem com ID ";
     private static final String MSG_INEXISTENTE = " inexistente.";
-    @Inject
-    @RestClient
-    ICadastroServiceClient cadastroServiceClient;
     private final PostagemRepository postagemRepository;
 
     public PostagemService(PostagemRepository postagemRepository) {
