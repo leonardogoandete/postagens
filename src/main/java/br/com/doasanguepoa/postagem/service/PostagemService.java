@@ -104,16 +104,13 @@ public class PostagemService {
     }
 
     //Listar postagem por instituicao
-    public List<Postagem> listarPostagensPorInstituicao(String nomeInstituicao) {
-        //TO-DO definir dono da postagem usando o CNPJ da instituicao
-        String cnpjInstituicao = cadastroServiceClient.buscarInstituicaoPorNome(nomeInstituicao).cnpj();
+    public List<Postagem> listarPostagensPorInstituicao(String cnpjInstituicao) {
 
-        if (nomeInstituicao == null) {
+        if (cnpjInstituicao == null) {
             throw new IllegalArgumentException("Para listar postagens por instituicao, o CNPJ é obrigatório");
         }
 
-
-        List<Postagem> postagens = postagemRepository.findByInstituicao(cnpjInstituicao);
+        List<Postagem> postagens = postagemRepository.findByCnpj(cnpjInstituicao);
 
         if (postagens.isEmpty()) {
             logger.log(Level.WARNING,"Nenhuma postagem encontrada");

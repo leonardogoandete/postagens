@@ -106,8 +106,9 @@ class PostagemServiceTest {
     @Test
     void testInserirPostagemComSucesso() {
         // Arrange
-        DadosCadastroPostagemDTO postagemDTO = new DadosCadastroPostagemDTO("Mensagem");
-        Postagem postagem = new Postagem(postagemDTO.mensagem());
+        String cnpj = "87020517000120";
+        DadosCadastroPostagemDTO postagemDTO = new DadosCadastroPostagemDTO("Mensagem",cnpj);
+        Postagem postagem = new Postagem(postagemDTO.mensagem(),cnpj);
         when(postagemRepository.isPersistent(postagem)).thenReturn(true);
 
         // Act
@@ -130,7 +131,8 @@ class PostagemServiceTest {
     @Test
     void testInserirPostagemFalhaNoRepositorio() {
         // Arrange
-        Postagem postagem = new Postagem("Mensagem");
+        String cnpj = "87020517000120";
+        Postagem postagem = new Postagem("Mensagem",cnpj);
         when(postagemRepository.isPersistent(postagem)).thenReturn(false);
 
         // Act & Assert

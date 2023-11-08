@@ -10,6 +10,7 @@ import br.com.doasanguepoa.postagem.model.Postagem;
 import br.com.doasanguepoa.postagem.service.PostagemService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 import jakarta.transaction.Transactional;
@@ -36,17 +37,22 @@ public class PostagemResource{
     private static final Logger logger = Logger.getLogger(PostagemResource.class.getName());
     private final PostagemService postagemService;
 
+    private final JsonWebToken jwt;
+
     private final PostagemMapper postagemMapper;
 
-    public PostagemResource(PostagemService postagemService, PostagemMapper postagemMapper){
+    public PostagemResource(PostagemService postagemService, PostagemMapper postagemMapper, JsonWebToken jwt){
         this.postagemService = postagemService;
         this.postagemMapper = postagemMapper;
+        this.jwt = jwt;
     }
 
     @GET
     @RolesAllowed({ "USUARIO","INSTITUICAO" })
     public Response listarPostagens() {
         logger.info("Buscando todas as postagens!");
+        String cnpj = jwt.getClaim("upn");
+        logger.info(cnpj);
         List<DadosListagemPostagemDTO> postagens;
         postagens = postagemMapper.toDadosListagemPostagem(postagemService.listarTodasPostagens());
         return Response.status(Response.Status.OK).entity(postagens).build();
@@ -56,15 +62,12 @@ public class PostagemResource{
     @Transactional
     @RolesAllowed({"INSTITUICAO"})
     public Response adicionarPostagem(@Valid DadosCadastroPostagemDTO dadosCadastroPostagemDTO) {
-        logger.log(Level.INFO,"Inserino nova postagem {}", dadosCadastroPostagemDTO);
+        logger.log(Level.INFO,"Inserindo nova postagem {}", dadosCadastroPostagemDTO);
         Postagem postagem = postagemMapper.toPostagem(dadosCadastroPostagemDTO);
         Postagem postagemSalva = postagemService.inserirPostagem(postagem);
         DadosListagemPostagemDTO dadosListagemPostagemDTO = postagemMapper.toDadosListagemPostagem(postagemSalva);
         return Response.status(Response.Status.CREATED).entity(dadosListagemPostagemDTO).build();
     }
-
-    //#############################3
-
 
     @GET
     @Path("/{id}")
@@ -78,13 +81,14 @@ public class PostagemResource{
     }
 
     @GET
-    @Path("/instituicao/{nomeInstituicao}")
+    @Path("/instituicao/")
     @RolesAllowed({"USUARIO", "INSTITUICAO"})
-    public Response buscarPostagemPorNomeInstituicao(@PathParam String nomeInstituicao) {
-        logger.log(Level.INFO,"Buscando postagem por nome da instituição {}", nomeInstituicao);
+    public Response buscarPostagemPorNomeInstituicao() {
+        String cnpjInstituicao = jwt.getClaim("upn");
+        logger.log(Level.INFO,"Buscando postagem por nome da instituição {}", cnpjInstituicao);
 
         List<DadosListagemPostagemDTO> postagens;
-        postagens = Optional.ofNullable(postagemService.listarPostagensPorInstituicao(nomeInstituicao))
+        postagens = Optional.ofNullable(postagemService.listarPostagensPorInstituicao(cnpjInstituicao))
                 .map(list -> list.stream()
                         .map(postagemMapper::toDadosListagemPostagem)
                         .toList())

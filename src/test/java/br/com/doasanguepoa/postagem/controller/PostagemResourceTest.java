@@ -37,7 +37,8 @@ class PostagemResourceTest {
 
     @Test
     void testAdicionarPostagem(){
-        DadosCadastroPostagemDTO dadosPostagem = new DadosCadastroPostagemDTO("Minha nova postagem");
+        String cnpj = "87020517000120";
+        DadosCadastroPostagemDTO dadosPostagem = new DadosCadastroPostagemDTO("Minha nova postagem",cnpj);
 
         Response response = given()
                 .contentType(ContentType.JSON)
@@ -49,15 +50,13 @@ class PostagemResourceTest {
                 .statusCode(201);
 
         response.then()
-                .body("mensagem", Matchers.equalTo("Minha nova postagem"));
+                .body("mensagem", Matchers.equalTo("Minha nova postagem"))
+                .body("cnpjc", Matchers.equalTo("87020517000120"));
 
 
         response.then()
                 .log()
                 .all();
-
-
-
     }
     @Test
     void testBuscarPostagemPorId() {

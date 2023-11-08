@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: hibernate
 
   quarkus-app:
-    image: leogoandete/postagens:1.0.5-SNAPSHOT
+    image: leogoandete/postagens:v1.0.0
     environment:
       QUARKUS_DATASOURCE_USERNAME: postgres
       QUARKUS_DATASOURCE_PASSWORD: hibernate

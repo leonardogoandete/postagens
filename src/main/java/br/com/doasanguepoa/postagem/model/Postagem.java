@@ -19,19 +19,21 @@ public class Postagem {
 
     private String mensagem;
 
+    private String cnpj;
+
     @CreationTimestamp
     private Instant createdAt;
     @UpdateTimestamp
     private Instant updateAt;
 
     public Postagem(){}
-    public Postagem(String mensagem) {
+    public Postagem(String mensagem, String cnpj) {
         this.mensagem = mensagem;
         this.createdAt = Instant.now();
         this.updateAt = Instant.now();
     }
 
-    public Postagem(String mensagem, Instant createdAt, Instant updateAt) {
+    public Postagem(String mensagem, String cnpj, Instant createdAt, Instant updateAt) {
         this.mensagem = mensagem;
         this.createdAt = createdAt;
         this.updateAt = updateAt;
@@ -51,6 +53,14 @@ public class Postagem {
 
     public void setMensagem(String mensagem) {
         this.mensagem = mensagem;
+    }
+
+    public String getCnpj() {
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
     }
 
     public Instant getCreatedAt() {

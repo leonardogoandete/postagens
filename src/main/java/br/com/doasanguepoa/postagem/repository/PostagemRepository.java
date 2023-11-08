@@ -8,7 +8,7 @@ import java.util.List;
 
 @ApplicationScoped
 public class PostagemRepository implements PanacheRepository<Postagem> {
-    public List<Postagem> findByInstituicao(String instituicaoId) {
-        return find("instituicao.id", instituicaoId).list();
+    public List<Postagem> findByCnpj(String cnpj){
+        return find("cnpj",cnpj).list();
     }
 }

@@ -11,13 +11,15 @@ class PostagemTest {
     @Test
     void testConstrutorEPropriedadesComDataCriacaoEDataAtualizacao() {
         String mensagem = "Teste de mensagem";
+        String cnpj = "87020517000120";
         Instant createdAt = Instant.now();
         Instant updateAt = Instant.now().plusSeconds(200);
-        Postagem postagem = new Postagem(mensagem,createdAt,updateAt);
+        Postagem postagem = new Postagem(mensagem,cnpj,createdAt,updateAt);
         postagem.setId(1L);
 
         assertNotNull(postagem.getId());
         assertEquals(mensagem, postagem.getMensagem());
+        //assertEquals(cnpj, postagem.getCnpj());
         assertEquals(createdAt, postagem.getCreatedAt());
         assertEquals(updateAt, postagem.getUpdateAt());
         assertNotNull(postagem.getCreatedAt());
@@ -27,7 +29,8 @@ class PostagemTest {
     @Test
     void testConstrutorEPropriedades() {
         String mensagem = "Teste de mensagem";
-        Postagem postagem = new Postagem(mensagem);
+        String cnpj = "87020517000120";
+        Postagem postagem = new Postagem(mensagem,cnpj);
         postagem.setId(1L);
 
         assertNotNull(postagem.getId());
@@ -39,7 +42,8 @@ class PostagemTest {
     @Test
     void testAtualizacaoDaMensagem() {
         String mensagemOriginal = "Mensagem original";
-        Postagem postagem = new Postagem(mensagemOriginal);
+        String cnpj = "87020517000120";
+        Postagem postagem = new Postagem(mensagemOriginal,cnpj);
 
         String novaMensagem = "Nova mensagem";
         postagem.setMensagem(novaMensagem);
@@ -50,7 +54,8 @@ class PostagemTest {
     @Test
     void testAtualizacaoDoTimestamp() {
         String mensagem = "Mensagem original";
-        Postagem postagem = new Postagem(mensagem);
+        String cnpj = "87020517000120";
+        Postagem postagem = new Postagem(mensagem,cnpj);
         Instant timestampOriginal = postagem.getCreatedAt();
 
         postagem.setUpdateAt(Instant.now());
@@ -63,7 +68,8 @@ class PostagemTest {
     @Test
     void testIdNaoNulo() {
         String mensagem = "Mensagem de teste";
-        Postagem postagem = new Postagem(mensagem);
+        String cnpj = "87020517000120";
+        Postagem postagem = new Postagem(mensagem,cnpj);
         postagem.setId(2L);
 
         assertNotNull(postagem.getId());
