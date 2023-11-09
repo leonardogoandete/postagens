@@ -44,10 +44,10 @@ jobs:
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=leonardogoandete_postagens -Pcoverage
 
   gerando-imagem-docker:
+    if: github.event_name == 'release' && github.event.action == 'published'
 #   o job de build-and-analyze precisa ter passado para iniciar a geração de imagem
     needs:
       - build-and-analyze
-    if: github.event_name == 'release' && github.event.action == 'published'
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
 
