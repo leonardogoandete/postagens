@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
- class PostagemResourceUnitTest {
+class PostagemResourceUnitTest {
 
     @Mock
     PostagemRepository postagemRepository;
@@ -31,15 +31,18 @@ import static org.mockito.Mockito.*;
 
     @Test
     void listarPostagensComErroTest() {
+        // Teste para listar postagens com erro (não está completo)
         List<DadosListagemPostagemDTO> postagens = new ArrayList<>(); // Crie uma lista de DadosListagemPostagemDTO fictícia
 
         DadosListagemPostagemDTO postagem1 = new DadosListagemPostagemDTO(1L, "Test Post 1", "87020517000120");
         DadosListagemPostagemDTO postagem2 = new DadosListagemPostagemDTO(2L, "Test Post 2", "87020517000120");
 
+        // Continuação do teste...
     }
 
     @Test
     void buscarPostagemPorIdTest() {
+        // Teste para buscar uma postagem pelo ID e verificar se a resposta é 200 e contém o ID esperado
         Postagem postagem = new Postagem("Test Post", "87020517000120");
         postagem.setId(1L);
         // Criando uma postagem fictícia
@@ -55,6 +58,7 @@ import static org.mockito.Mockito.*;
 
     @Test
     void adicionarPostagemTest() {
+        // Teste para adicionar uma postagem (não está completo)
         DadosCadastroPostagemDTO postagemDTO = new DadosCadastroPostagemDTO("Test Post", "87020517000120");
         postagemResource.adicionarPostagem(postagemDTO);
         verify(postagemResource).adicionarPostagem(postagemDTO);
@@ -62,11 +66,12 @@ import static org.mockito.Mockito.*;
 
     @Test
     void adicionarPostagemComMensagemNulaTest() {
+        // Teste para adicionar uma postagem com mensagem nula e verificar se a exceção é lançada corretamente
         DadosCadastroPostagemDTO postagemDTO = new DadosCadastroPostagemDTO(null, "87020517000120");
         try {
             postagemResource.adicionarPostagem(postagemDTO);
             verify(postagemResource).adicionarPostagem(postagemDTO);
-        }catch (WebApplicationException e) {
+        } catch (WebApplicationException e) {
             assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), e.getResponse().getStatus());
         }
     }
@@ -74,6 +79,7 @@ import static org.mockito.Mockito.*;
     @Test
     @Transactional
     void atualizarPostagemTest() {
+        // Teste para atualizar uma postagem existente e verificar se a mensagem foi atualizada corretamente
         Postagem postagem = new Postagem("Original Test Post", "87020517000120");
         lenient().when(postagemRepository.findById(1L)).thenReturn(postagem);
 
@@ -87,7 +93,8 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-     void atualizarPostagemInexistenteTest() {
+    void atualizarPostagemInexistenteTest() {
+        // Teste para atualizar uma postagem inexistente e verificar se a exceção é lançada corretamente
         try {
             DadosAtualizacaoPostagemDTO postagemDTO = new DadosAtualizacaoPostagemDTO(99L, "Updated Test Post");
             postagemResource.atualizarPostagem(postagemDTO);
@@ -97,7 +104,8 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-     void deletarPostagemInexistenteTest() {
+    void deletarPostagemInexistenteTest() {
+        // Teste para deletar uma postagem inexistente e verificar se a exceção é lançada corretamente
         try {
             postagemResource.deletarPostagem(1L);
         } catch (WebApplicationException e) {
@@ -107,6 +115,7 @@ import static org.mockito.Mockito.*;
 
     @Test
     void deletarPostagemTest() {
+        // Teste para deletar uma postagem existente (não está completo)
         Postagem postagem = new Postagem("Test Post", "87020517000120");
         postagem.setId(1L);
         // Criando uma postagem fictícia

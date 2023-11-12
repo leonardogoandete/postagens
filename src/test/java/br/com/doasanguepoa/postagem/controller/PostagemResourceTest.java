@@ -17,6 +17,7 @@ class PostagemResourceTest {
 
     @Test
     void testListarPostagens() {
+        // Teste para verificar se a listagem de postagens retorna o código 200, é JSON e tem um tamanho de 3
         Response response = given()
                 .when()
                 .get("/postagens");
@@ -28,7 +29,7 @@ class PostagemResourceTest {
                 .contentType(ContentType.JSON);
 
         response.then()
-                .body("$.", hasSize(3));
+                .body("$.", hasSize(3)); // Verifica se a resposta tem um tamanho de 3
 
         response.then()
                 .log()
@@ -37,6 +38,7 @@ class PostagemResourceTest {
 
     @Test
     void testAdicionarPostagem(){
+        // Teste para adicionar uma nova postagem e verificar se a resposta é 201
         DadosCadastroPostagemDTO dadosPostagem = new DadosCadastroPostagemDTO("Minha nova postagem","87020517000120");
 
         Response response = given()
@@ -52,13 +54,14 @@ class PostagemResourceTest {
                 .body("mensagem", Matchers.equalTo("Minha nova postagem"))
                 .body("cnpj", Matchers.equalTo("87020517000120"));
 
-
         response.then()
                 .log()
                 .all();
     }
+
     @Test
     void testBuscarPostagemPorId() {
+        // Teste para buscar uma postagem pelo ID e verificar se a resposta é 200 e contém o ID esperado
         long postId = 2; // ID da postagem a ser buscada
 
         Response response = given()
@@ -71,7 +74,7 @@ class PostagemResourceTest {
 
         response.then()
                 .contentType(ContentType.JSON)
-                .body("id", Matchers.equalTo(2));
+                .body("id", Matchers.equalTo(2)); // Verifica se o ID na resposta é igual a 2
 
         response.then()
                 .log()
@@ -80,6 +83,7 @@ class PostagemResourceTest {
 
     @Test
     void testAtualizarPostagem() {
+        // Teste para atualizar uma postagem existente e verificar se a resposta é 200 e contém a mensagem atualizada
         DadosAtualizacaoPostagemDTO dadosAtualizacaoPostagemDTO = new DadosAtualizacaoPostagemDTO(2L,"Nova mensagem para a postagem 2");
 
         Response response = given()
@@ -101,6 +105,7 @@ class PostagemResourceTest {
 
     @Test
     void testDeletarPostagem() {
+        // Teste para deletar uma postagem pelo ID e verificar se a resposta é 204 (sem conteúdo)
         long postId = 4;
 
         Response response = given()

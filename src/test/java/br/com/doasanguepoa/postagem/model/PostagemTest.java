@@ -10,6 +10,7 @@ class PostagemTest {
 
     @Test
     void testConstrutorEPropriedadesComDataCriacaoEDataAtualizacao() {
+        // Teste para verificar o construtor e propriedades quando fornecidas data de criação e atualização
         String mensagem = "Teste de mensagem";
         String cnpj = "87020517000120";
         Instant createdAt = Instant.now();
@@ -28,6 +29,7 @@ class PostagemTest {
 
     @Test
     void testConstrutorEPropriedades() {
+        // Teste para verificar o construtor e propriedades padrão
         String mensagem = "Teste de mensagem";
         String cnpj = "87020517000120";
         Postagem postagem = new Postagem(mensagem,cnpj);
@@ -41,6 +43,7 @@ class PostagemTest {
 
     @Test
     void testAtualizacaoDaMensagem() {
+        // Teste para verificar a atualização da mensagem
         String mensagemOriginal = "Mensagem original";
         String cnpj = "87020517000120";
         Postagem postagem = new Postagem(mensagemOriginal,cnpj);
@@ -53,6 +56,7 @@ class PostagemTest {
 
     @Test
     void testAtualizacaoDoTimestamp() {
+        // Teste para verificar a atualização do timestamp
         String mensagem = "Mensagem original";
         String cnpj = "87020517000120";
         Postagem postagem = new Postagem(mensagem,cnpj);
@@ -67,6 +71,7 @@ class PostagemTest {
 
     @Test
     void testIdNaoNulo() {
+        // Teste para verificar se o ID não é nulo após ser definido
         String mensagem = "Mensagem de teste";
         String cnpj = "87020517000120";
         Postagem postagem = new Postagem(mensagem,cnpj);
