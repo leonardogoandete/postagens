@@ -84,6 +84,8 @@ services:
     image: grafana/grafana
     container_name: grafana
     hostname: grafana
+    volumes:
+      - ./config/prometheus_ds.yml:/etc/grafana/provisioning/datasources/prometheus_ds.yml
     environment:
       -  GF_SECURITY_ADMIN_PASSWORD=admin
     restart: unless-stopped
@@ -97,8 +99,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: hibernate
 
-  postagens-app:
-    image: leogoandete/postagens:v1.0.0
+  postagens-api:
+    image: leogoandete/postagens:v1.1.0
     environment:
       QUARKUS_DATASOURCE_USERNAME: postgres
       QUARKUS_DATASOURCE_PASSWORD: hibernate
@@ -113,6 +115,18 @@ services:
       - postgres
       - jaeger
       - graylog
+
+# add projeto front
+  doasanguepoa-front:
+    image: leogoandete/doasanguepoa-front:v1.2.0
+    environment:
+      REACT_APP_URL_API_LOGIN:
+      REACT_APP_URL_API_POSTAGENS: postagens-api:8081
+      REACT_APP_URL_API_CADASTRO:
+    ports:
+      - 8080:3000
+    depends_on:
+      - postagens-api
 
 networks:
   graylog:
