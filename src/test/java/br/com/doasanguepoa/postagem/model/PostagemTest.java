@@ -19,7 +19,7 @@ class PostagemTest {
 
         assertNotNull(postagem.getId());
         assertEquals(mensagem, postagem.getMensagem());
-        //assertEquals(cnpj, postagem.getCnpj());
+        assertEquals(cnpj, postagem.getCnpj());
         assertEquals(createdAt, postagem.getCreatedAt());
         assertEquals(updateAt, postagem.getUpdateAt());
         assertNotNull(postagem.getCreatedAt());

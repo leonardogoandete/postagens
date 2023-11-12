@@ -69,3 +69,12 @@ Create your first JPA entity
 Easily start your RESTful Web Services
 
 [Related guide section...](https://quarkus.io/guides/getting-started#the-jax-rs-resources)
+
+## Documentação dos testes:
+
+Aqui está a documentação dos testes realizados no projeto:
+
+ - [Testes de API](PostagemResourceTest.md)
+ - [Testes de Unidade](PostagemResourceUnitTest.md)
+ - [Testes de Model Postagem](PostagemModel.md)
+ - [Testes de Integração](PostagemServiceTest.md)
