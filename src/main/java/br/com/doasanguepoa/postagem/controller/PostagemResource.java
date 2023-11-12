@@ -2,10 +2,8 @@ package br.com.doasanguepoa.postagem.controller;
 
 import br.com.doasanguepoa.postagem.dto.postagem.DadosAtualizacaoPostagemDTO;
 import br.com.doasanguepoa.postagem.mapper.PostagemMapper;
-
 import br.com.doasanguepoa.postagem.dto.postagem.DadosCadastroPostagemDTO;
 import br.com.doasanguepoa.postagem.dto.postagem.DadosListagemPostagemDTO;
-
 import br.com.doasanguepoa.postagem.model.Postagem;
 import br.com.doasanguepoa.postagem.service.PostagemService;
 import jakarta.annotation.security.RolesAllowed;
@@ -25,39 +23,39 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//https://www.linkedin.com/pulse/tutorial-quarkus-simplificando-o-hibernate-panache-da-silva-melo/?originalSubdomain=pt
+// Link útil: https://www.linkedin.com/pulse/tutorial-quarkus-simplificando-o-hibernate-panache-da-silva-melo/?originalSubdomain=pt
 
+// Recurso para manipulação de postagens
 @Path("/postagens")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@SecurityScheme(scheme = "Bearer",
-        type = SecuritySchemeType.HTTP,
-        bearerFormat = "JWT")
-public class PostagemResource{
+@SecurityScheme(scheme = "Bearer", type = SecuritySchemeType.HTTP, bearerFormat = "JWT")
+public class PostagemResource {
     private static final Logger logger = Logger.getLogger(PostagemResource.class.getName());
     private final PostagemService postagemService;
-
     private final JsonWebToken jwt;
-
     private final PostagemMapper postagemMapper;
 
-    public PostagemResource(PostagemService postagemService, PostagemMapper postagemMapper, JsonWebToken jwt){
+    // Injeção de dependências nos parâmetros do construtor
+    public PostagemResource(PostagemService postagemService, PostagemMapper postagemMapper, JsonWebToken jwt) {
         this.postagemService = postagemService;
         this.postagemMapper = postagemMapper;
         this.jwt = jwt;
     }
 
+    // Listar todas as postagens (requer roles de USUARIO ou INSTITUICAO)
     @GET
     @RolesAllowed({ "USUARIO","INSTITUICAO" })
     public Response listarPostagens() {
         logger.info("Buscando todas as postagens!");
-        String cnpj = jwt.getClaim("upn");
+        String cnpj = jwt.getClaim("upn");  // Recuperar CNPJ do token
         logger.info(cnpj);
         List<DadosListagemPostagemDTO> postagens;
         postagens = postagemMapper.toDadosListagemPostagem(postagemService.listarTodasPostagens());
         return Response.status(Response.Status.OK).entity(postagens).build();
     }
 
+    // Adicionar nova postagem (requer role de INSTITUICAO)
     @POST
     @Transactional
     @RolesAllowed({"INSTITUICAO"})
@@ -69,6 +67,7 @@ public class PostagemResource{
         return Response.status(Response.Status.CREATED).entity(dadosListagemPostagemDTO).build();
     }
 
+    // Buscar postagem por ID (requer roles de USUARIO ou INSTITUICAO)
     @GET
     @Path("/{id}")
     @RolesAllowed({"USUARIO", "INSTITUICAO"})
@@ -80,6 +79,7 @@ public class PostagemResource{
                 .orElse(Response.status(Response.Status.NOT_FOUND)).build();
     }
 
+    // Buscar postagem por nome da instituição (requer roles de USUARIO ou INSTITUICAO)
     @GET
     @Path("/instituicao/")
     @RolesAllowed({"USUARIO", "INSTITUICAO"})
@@ -96,10 +96,8 @@ public class PostagemResource{
         return Response.status(Response.Status.OK).entity(postagens).build();
     }
 
-
-
+    // Atualizar postagem (requer role de INSTITUICAO)
     @PUT
-    //@Path("/{id}")
     @Transactional
     @RolesAllowed({"INSTITUICAO"})
     public Response atualizarPostagem(@Valid DadosAtualizacaoPostagemDTO postagemDTO) {
@@ -108,6 +106,7 @@ public class PostagemResource{
         return Response.status(Response.Status.OK).entity(postagemMapper.toDadosListagemPostagem(postagem)).build();
     }
 
+    // Deletar postagem por ID (requer roles de ADMIN ou INSTITUICAO)
     @DELETE
     @Path("/{id}")
     @Transactional

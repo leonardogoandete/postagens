@@ -23,10 +23,14 @@ public class Postagem {
 
     @CreationTimestamp
     private Instant createdAt;
+
     @UpdateTimestamp
     private Instant updateAt;
 
-    public Postagem(){}
+    // Construtor padrão necessário para JPA
+    public Postagem() {}
+
+    // Construtor para criar uma nova postagem com mensagem e CNPJ
     public Postagem(String mensagem, String cnpj) {
         this.cnpj = cnpj;
         this.mensagem = mensagem;
@@ -34,6 +38,7 @@ public class Postagem {
         this.updateAt = Instant.now();
     }
 
+    // Construtor para criar uma nova postagem com mensagem, CNPJ, createdAt e updatedAt
     public Postagem(String mensagem, String cnpj, Instant createdAt, Instant updateAt) {
         this.cnpj = cnpj;
         this.mensagem = mensagem;
@@ -41,6 +46,7 @@ public class Postagem {
         this.updateAt = updateAt;
     }
 
+    // Getters e Setters para todos os campos
     public Long getId() {
         return id;
     }
