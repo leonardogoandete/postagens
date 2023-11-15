@@ -1,3 +1,3 @@
-insert into postagens (id, mensagem, cnpj, createdAt, updateAt) values(2, 'Sangue AB+', '87020517000120', '2023-10-19 16:55:59.806000 +00:00', '2023-10-19 16:55:59 +00:00');
-insert into postagens (id, mensagem, cnpj, createdAt, updateAt) values(3, 'Sangue O+', '93712735000200', '2023-10-19 16:55:59.806000 +00:00', '2023-10-19 16:55:59 +00:00');
-insert into postagens (id, mensagem, cnpj, createdAt, updateAt) values(4, 'Sangue A-', '87020517000120', '2023-10-19 16:55:59.806000 +00:00', '2023-10-19 16:55:59 +00:00');
+insert into postagens (id, mensagem, cnpj, createdAt, updateAt) values(997, 'Sangue AB+', '87020517000120', '2023-10-19 16:55:59.806000 +00:00', '2023-10-19 16:55:59 +00:00');
+insert into postagens (id, mensagem, cnpj, createdAt, updateAt) values(998, 'Sangue O+', '93712735000200', '2023-10-19 16:55:59.806000 +00:00', '2023-10-19 16:55:59 +00:00');
+insert into postagens (id, mensagem, cnpj, createdAt, updateAt) values(999, 'Sangue A-', '87020517000120', '2023-10-19 16:55:59.806000 +00:00', '2023-10-19 16:55:59 +00:00');
