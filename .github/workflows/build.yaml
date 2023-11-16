@@ -51,6 +51,7 @@ jobs:
         with:
           scan-type: 'fs'
           scan-ref: '.'
+          format: 'table'
 
   gerando-imagem-docker:
     if: github.event_name == 'release' && github.event.action == 'published'
