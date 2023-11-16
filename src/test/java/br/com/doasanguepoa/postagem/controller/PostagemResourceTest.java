@@ -62,7 +62,7 @@ class PostagemResourceTest {
     @Test
     void testBuscarPostagemPorId() {
         // Teste para buscar uma postagem pelo ID e verificar se a resposta é 200 e contém o ID esperado
-        long postId = 2; // ID da postagem a ser buscada
+        long postId = 999; // ID da postagem a ser buscada
 
         Response response = given()
                 .pathParam("id", postId)
@@ -74,7 +74,7 @@ class PostagemResourceTest {
 
         response.then()
                 .contentType(ContentType.JSON)
-                .body("id", Matchers.equalTo(2)); // Verifica se o ID na resposta é igual a 2
+                .body("id", Matchers.equalTo(999)); // Verifica se o ID na resposta é igual a 2
 
         response.then()
                 .log()
@@ -84,7 +84,7 @@ class PostagemResourceTest {
     @Test
     void testAtualizarPostagem() {
         // Teste para atualizar uma postagem existente e verificar se a resposta é 200 e contém a mensagem atualizada
-        DadosAtualizacaoPostagemDTO dadosAtualizacaoPostagemDTO = new DadosAtualizacaoPostagemDTO(2L,"Nova mensagem para a postagem 2");
+        DadosAtualizacaoPostagemDTO dadosAtualizacaoPostagemDTO = new DadosAtualizacaoPostagemDTO(1L,"Nova mensagem para a postagem 2");
 
         Response response = given()
                 .contentType(ContentType.JSON)
@@ -106,7 +106,7 @@ class PostagemResourceTest {
     @Test
     void testDeletarPostagem() {
         // Teste para deletar uma postagem pelo ID e verificar se a resposta é 204 (sem conteúdo)
-        long postId = 4;
+        long postId = 997;
 
         Response response = given()
                 .pathParam("id", postId)
