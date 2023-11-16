@@ -75,8 +75,8 @@ jobs:
       - name: Listando imagem docker
         run: docker image ls
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@v0.3.0
+      - name: Aqua Security Trivy
+        uses: aquasecurity/trivy-action@0.14.0
         with:
           image-ref: ${{ secrets.DOCKER_USERNAME }}/postagens:$GITHUB_REF_NAME
           exit-code: 1
