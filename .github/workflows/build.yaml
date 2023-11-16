@@ -75,6 +75,12 @@ jobs:
       - name: Listando imagem docker
         run: docker image ls
 
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.3.0
+        with:
+          image-ref: ${{ secrets.DOCKER_USERNAME }}/postagens:$GITHUB_REF_NAME
+          exit-code: 1
+
       - name: Autenticando no docker registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
