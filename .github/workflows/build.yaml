@@ -43,6 +43,11 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=leonardogoandete_postagens -Pcoverage
 
+      - name: Aqua Security Trivy
+        uses: aquasecurity/trivy-action@0.14.0
+        run: |
+          trivy --security-checks vuln,secret,config ./postagens
+
   gerando-imagem-docker:
     if: github.event_name == 'release' && github.event.action == 'published'
 #   o job de build-and-analyze precisa ter passado para iniciar a geração de imagem
@@ -74,12 +79,6 @@ jobs:
 
       - name: Listando imagem docker
         run: docker image ls
-
-      - name: Aqua Security Trivy
-        uses: aquasecurity/trivy-action@0.14.0
-        with:
-          image-ref: leogoandete/postagens:v2.0.0
-          exit-code: 1
 
       - name: Autenticando no docker registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
