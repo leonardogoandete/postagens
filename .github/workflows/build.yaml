@@ -50,7 +50,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.14.0
         with:
           scan-type: 'fs'
-          scan-ref: './postagens'
+          scan-ref: '.'
 
   gerando-imagem-docker:
     if: github.event_name == 'release' && github.event.action == 'published'
