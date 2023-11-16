@@ -70,7 +70,7 @@ jobs:
           cache: maven
 
       - name: Gerando a imagem docker
-        run: ./mvnw package -Dquarkus.container-image.tag=$GITHUB_REF_NAME -Dquarkus.container-image.group=${{ secrets.DOCKER_USERNAME }} -Dquarkus.container-image.build=true
+        run: ./mvnw package -Dquarkus.container-image.tag=$GITHUB_REF_NAME -Dquarkus.container-image.group=leogoandete -Dquarkus.container-image.build=true
 
       - name: Listando imagem docker
         run: docker image ls
@@ -78,7 +78,7 @@ jobs:
       - name: Aqua Security Trivy
         uses: aquasecurity/trivy-action@0.14.0
         with:
-          image-ref: ${{ secrets.DOCKER_USERNAME }}/postagens:$GITHUB_REF_NAME
+          image-ref: leogoandete/postagens:v2.0.0
           exit-code: 1
 
       - name: Autenticando no docker registry
