@@ -45,7 +45,7 @@ public class PostagemResource {
 
     // Listar todas as postagens (requer roles de USUARIO ou INSTITUICAO)
     @GET
-    @RolesAllowed({ "USUARIO","INSTITUICAO" })
+    //@RolesAllowed({ "USUARIO","INSTITUICAO" })
     public Response listarPostagens() {
         logger.info("Buscando todas as postagens!");
         String cnpj = jwt.getClaim("upn");  // Recuperar CNPJ do token
@@ -58,7 +58,7 @@ public class PostagemResource {
     // Adicionar nova postagem (requer role de INSTITUICAO)
     @POST
     @Transactional
-    @RolesAllowed({"INSTITUICAO"})
+    //@RolesAllowed({"INSTITUICAO"})
     public Response adicionarPostagem(@Valid DadosCadastroPostagemDTO dadosCadastroPostagemDTO) {
         logger.log(Level.INFO,"Inserindo nova postagem {}", dadosCadastroPostagemDTO);
         Postagem postagem = postagemMapper.toPostagem(dadosCadastroPostagemDTO);
@@ -70,7 +70,7 @@ public class PostagemResource {
     // Buscar postagem por ID (requer roles de USUARIO ou INSTITUICAO)
     @GET
     @Path("/{id}")
-    @RolesAllowed({"USUARIO", "INSTITUICAO"})
+    //@RolesAllowed({"USUARIO", "INSTITUICAO"})
     public Response buscarPostagemPorId(@PathParam Long id) {
         logger.log(Level.INFO,"Buscando postagem por ID {}", id);
         return postagemService.buscarPostagemPorId(id)
@@ -82,7 +82,7 @@ public class PostagemResource {
     // Buscar postagem por nome da instituição (requer roles de USUARIO ou INSTITUICAO)
     @GET
     @Path("/instituicao/")
-    @RolesAllowed({"USUARIO", "INSTITUICAO"})
+    //@RolesAllowed({"USUARIO", "INSTITUICAO"})
     public Response buscarPostagemPorNomeInstituicao() {
         String cnpjInstituicao = jwt.getClaim("upn");
         logger.log(Level.INFO,"Buscando postagem por nome da instituição {}", cnpjInstituicao);
@@ -99,7 +99,7 @@ public class PostagemResource {
     // Atualizar postagem (requer role de INSTITUICAO)
     @PUT
     @Transactional
-    @RolesAllowed({"INSTITUICAO"})
+    //@RolesAllowed({"INSTITUICAO"})
     public Response atualizarPostagem(@Valid DadosAtualizacaoPostagemDTO postagemDTO) {
         logger.log(Level.INFO,"Atualizando postagem {}", postagemDTO.id());
         Postagem postagem = postagemService.editarPostagemExistente(postagemDTO);
@@ -110,7 +110,7 @@ public class PostagemResource {
     @DELETE
     @Path("/{id}")
     @Transactional
-    @RolesAllowed({"ADMIN", "INSTITUICAO"})
+    //@RolesAllowed({"ADMIN", "INSTITUICAO"})
     public Response deletarPostagem(@PathParam Long id) {
         logger.log(Level.INFO,"Excluindo postagem com id {}", id);
         postagemService.excluirPostagemExistente(id);
