@@ -9,6 +9,7 @@ import br.com.doasanguepoa.postagem.service.PostagemService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 import jakarta.transaction.Transactional;
@@ -46,6 +47,7 @@ public class PostagemResource {
     // Listar todas as postagens (requer roles de USUARIO ou INSTITUICAO)
     @GET
     @RolesAllowed({ "USUARIO","INSTITUICAO" })
+    @Operation(summary = "Retorna todas as postagens cadastradas")
     public Response listarPostagens() {
         logger.info("Buscando todas as postagens!");
         String cnpj = jwt.getClaim("upn");  // Recuperar CNPJ do token
@@ -59,6 +61,7 @@ public class PostagemResource {
     @POST
     @Transactional
     @RolesAllowed({"INSTITUICAO"})
+    @Operation(summary = "Cadastra uma nova postagem. Somente Instituições")
     public Response adicionarPostagem(@Valid DadosCadastroPostagemDTO dadosCadastroPostagemDTO) {
         logger.log(Level.INFO,"Inserindo nova postagem {}", dadosCadastroPostagemDTO);
         Postagem postagem = postagemMapper.toPostagem(dadosCadastroPostagemDTO);
@@ -71,6 +74,7 @@ public class PostagemResource {
     @GET
     @Path("/{id}")
     @RolesAllowed({"USUARIO", "INSTITUICAO"})
+    @Operation(summary = "Retorna uma postagem especifica utilizando o ID")
     public Response buscarPostagemPorId(@PathParam Long id) {
         logger.log(Level.INFO,"Buscando postagem por ID {}", id);
         return postagemService.buscarPostagemPorId(id)
@@ -83,6 +87,7 @@ public class PostagemResource {
     @GET
     @Path("/instituicao/")
     @RolesAllowed({"USUARIO", "INSTITUICAO"})
+    @Operation(summary = "Retorna todas as postagens cadastradas para uma instituição. Esse endpoint utiliza o CNPJ do token JWT")
     public Response buscarPostagemPorNomeInstituicao() {
         String cnpjInstituicao = jwt.getClaim("upn");
         logger.log(Level.INFO,"Buscando postagem por nome da instituição {}", cnpjInstituicao);
@@ -100,6 +105,7 @@ public class PostagemResource {
     @PUT
     @Transactional
     @RolesAllowed({"INSTITUICAO"})
+    @Operation(summary = "Atualiza a mensagem de uma postagem.")
     public Response atualizarPostagem(@Valid DadosAtualizacaoPostagemDTO postagemDTO) {
         logger.log(Level.INFO,"Atualizando postagem {}", postagemDTO.id());
         Postagem postagem = postagemService.editarPostagemExistente(postagemDTO);
@@ -111,6 +117,7 @@ public class PostagemResource {
     @Path("/{id}")
     @Transactional
     @RolesAllowed({"ADMIN", "INSTITUICAO"})
+    @Operation(summary = "Deleta uma postagem cadastrada.")
     public Response deletarPostagem(@PathParam Long id) {
         logger.log(Level.INFO,"Excluindo postagem com id {}", id);
         postagemService.excluirPostagemExistente(id);
