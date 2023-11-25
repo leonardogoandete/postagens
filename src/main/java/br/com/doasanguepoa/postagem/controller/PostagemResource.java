@@ -85,8 +85,7 @@ public class PostagemResource {
     @RolesAllowed({"USUARIO", "INSTITUICAO"})
     public Response buscarPostagemPorNomeInstituicao() {
         String cnpjInstituicao = jwt.getClaim("upn");
-        logger.log(Level.INFO,"Buscando postagem por nome da instituição {}", cnpjInstituicao);
-
+        logger.log(Level.INFO,"Buscando postagem com CNPJ da instituição {0}", cnpjInstituicao);
         List<DadosListagemPostagemDTO> postagens;
         postagens = Optional.ofNullable(postagemService.listarPostagensPorInstituicao(cnpjInstituicao))
                 .map(list -> list.stream()
