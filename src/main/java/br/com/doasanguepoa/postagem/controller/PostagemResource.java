@@ -48,8 +48,6 @@ public class PostagemResource {
     @RolesAllowed({ "USUARIO","INSTITUICAO" })
     public Response listarPostagens() {
         logger.info("Buscando todas as postagens!");
-        String cnpj = jwt.getClaim("upn");  // Recuperar CNPJ do token
-        logger.info(cnpj);
         List<DadosListagemPostagemDTO> postagens;
         postagens = postagemMapper.toDadosListagemPostagem(postagemService.listarTodasPostagens());
         return Response.status(Response.Status.OK).entity(postagens).build();
@@ -60,7 +58,7 @@ public class PostagemResource {
     @Transactional
     @RolesAllowed({"INSTITUICAO"})
     public Response adicionarPostagem(@Valid DadosCadastroPostagemDTO dadosCadastroPostagemDTO) {
-        logger.log(Level.INFO,"Inserindo nova postagem {}", dadosCadastroPostagemDTO);
+        logger.log(Level.INFO,"Inserindo nova postagem {0}", dadosCadastroPostagemDTO);
         Postagem postagem = postagemMapper.toPostagem(dadosCadastroPostagemDTO);
         Postagem postagemSalva = postagemService.inserirPostagem(postagem);
         DadosListagemPostagemDTO dadosListagemPostagemDTO = postagemMapper.toDadosListagemPostagem(postagemSalva);
@@ -72,7 +70,7 @@ public class PostagemResource {
     @Path("/{id}")
     @RolesAllowed({"USUARIO", "INSTITUICAO"})
     public Response buscarPostagemPorId(@PathParam Long id) {
-        logger.log(Level.INFO,"Buscando postagem por ID {}", id);
+        logger.log(Level.INFO,"Buscando postagem por ID {0}", id);
         return postagemService.buscarPostagemPorId(id)
                 .map(postagemMapper::toDadosListagemPostagem)
                 .map(dadosListagemPostagemDTO -> Response.status(Response.Status.OK).entity(dadosListagemPostagemDTO))
@@ -100,7 +98,7 @@ public class PostagemResource {
     @Transactional
     @RolesAllowed({"INSTITUICAO"})
     public Response atualizarPostagem(@Valid DadosAtualizacaoPostagemDTO postagemDTO) {
-        logger.log(Level.INFO,"Atualizando postagem {}", postagemDTO.id());
+        logger.log(Level.INFO,"Atualizando postagem {0}", postagemDTO.id());
         Postagem postagem = postagemService.editarPostagemExistente(postagemDTO);
         return Response.status(Response.Status.OK).entity(postagemMapper.toDadosListagemPostagem(postagem)).build();
     }
@@ -111,7 +109,7 @@ public class PostagemResource {
     @Transactional
     @RolesAllowed({"ADMIN", "INSTITUICAO"})
     public Response deletarPostagem(@PathParam Long id) {
-        logger.log(Level.INFO,"Excluindo postagem com id {}", id);
+        logger.log(Level.INFO,"Excluindo postagem com id {0}", id);
         postagemService.excluirPostagemExistente(id);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
