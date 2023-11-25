@@ -118,15 +118,28 @@ services:
 
 # add projeto front
   doasanguepoa-front:
-    image: leogoandete/doasanguepoa-front:v1.2.0
+    image: leogoandete/doasanguepoa-front:v1.2.1
     environment:
-      REACT_APP_URL_API_LOGIN:
+      REACT_APP_URL_API_LOGIN: http://localhost:8086
       REACT_APP_URL_API_POSTAGENS: postagens-api:8081
-      REACT_APP_URL_API_CADASTRO:
+      REACT_APP_URL_API_CADASTRO: http://localhost:8085
     ports:
       - 8080:3000
     depends_on:
       - postagens-api
+
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql-teste
+    environment:
+      MYSQL_ROOT_PASSWORD: hibernate
+      MYSQL_DATABASE: quarkus
+      MYSQL_USER: hibernate
+      MYSQL_PASSWORD: hibernate
+    ports:
+      - 3306:3306
+
 
 networks:
   graylog:
