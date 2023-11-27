@@ -45,9 +45,10 @@ O projeto contem uma pipe de CI/CD, conforme os passos abaixo:
 - Envia a imagem para o docker hub
 
 
-### Disponível:
+### Links extras:
 - Docker: https://hub.docker.com/r/leogoandete/postagens <br>
 - Heroku: https://postagens-0305647248f4.herokuapp.com/q/swagger-ui <br>
+- Sonar Cloud: https://sonarcloud.io/summary/new_code?id=leonardogoandete_postagens
 
 Obs.: No heroku ao acessar a página, pode demorar um pouco para o serviço iniciar pois o projeto fica hibernado caso não for acessado recentemente.
 
