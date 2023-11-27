@@ -83,5 +83,5 @@ Aqui está a documentação dos testes realizados no projeto:
  - [Testes de API](PostagemResourceTest.md)
  - [Testes de Unidade](PostagemResourceUnitTest.md)
  - [Testes de Model Postagem](PostagemModel.md)
- - [Testes de Integração](PostagemServiceTest.md)
+ - [Testes de API](PostagemServiceTest.md)
  - [Testes de Sistema](https://github.com/leonardogoandete/doasanguepoa/blob/main/README.md)

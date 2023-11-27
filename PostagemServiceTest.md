@@ -38,9 +38,8 @@ Este teste verifica o método `listarTodasPostagens` quando o repositório retor
 2. Chamada do método `listarTodasPostagens`.
 3. Verificação se a lista de postagens está vazia.
 
-...
 
-### 16. `testExcluirPostagemExistenteComSucesso`
+### 4. `testExcluirPostagemExistenteComSucesso`
 
 Este teste verifica o método `excluirPostagemExistente` quando a postagem é excluída com sucesso.
 
@@ -50,7 +49,7 @@ Este teste verifica o método `excluirPostagemExistente` quando a postagem é ex
 2. Chamada do método `excluirPostagemExistente`.
 3. Verificação se o método de exclusão do repositório foi chamado.
 
-### 17. `testExcluirPostagemComIdNuloDeveLancarIllegalArgumentException`
+### 5. `testExcluirPostagemComIdNuloDeveLancarIllegalArgumentException`
 
 Este teste verifica o método `excluirPostagemExistente` quando é fornecido um ID nulo.
 
@@ -60,7 +59,7 @@ Este teste verifica o método `excluirPostagemExistente` quando é fornecido um 
 2. Chamada do método `excluirPostagemExistente`.
 3. Verificação se uma exceção do tipo `IllegalArgumentException` é lançada.
 
-### 18. `testExcluirPostagemInexistenteDeveLancarNotFoundException`
+### 6. `testExcluirPostagemInexistenteDeveLancarNotFoundException`
 
 Este teste verifica o método `excluirPostagemExistente` quando a postagem a ser excluída não existe.
 
