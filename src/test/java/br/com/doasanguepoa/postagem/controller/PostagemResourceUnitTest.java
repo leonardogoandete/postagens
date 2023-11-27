@@ -2,7 +2,6 @@ package br.com.doasanguepoa.postagem.controller;
 
 import br.com.doasanguepoa.postagem.dto.postagem.DadosAtualizacaoPostagemDTO;
 import br.com.doasanguepoa.postagem.dto.postagem.DadosCadastroPostagemDTO;
-import br.com.doasanguepoa.postagem.dto.postagem.DadosListagemPostagemDTO;
 import br.com.doasanguepoa.postagem.model.Postagem;
 import br.com.doasanguepoa.postagem.repository.PostagemRepository;
 import jakarta.transaction.Transactional;
@@ -12,9 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -28,17 +24,6 @@ class PostagemResourceUnitTest {
 
     @Mock
     PostagemResource postagemResource;
-
-    @Test
-    void listarPostagensComErroTest() {
-        // Teste para listar postagens com erro (não está completo)
-        List<DadosListagemPostagemDTO> postagens = new ArrayList<>(); // Crie uma lista de DadosListagemPostagemDTO fictícia
-
-        DadosListagemPostagemDTO postagem1 = new DadosListagemPostagemDTO(1L, "Test Post 1", "87020517000120");
-        DadosListagemPostagemDTO postagem2 = new DadosListagemPostagemDTO(2L, "Test Post 2", "87020517000120");
-
-        // Continuação do teste...
-    }
 
     @Test
     void buscarPostagemPorIdTest() {
