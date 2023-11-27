@@ -15,7 +15,7 @@ Os testes estão localizados no arquivo [PostagemResourceTest.java](src/test/jav
 Este teste verifica a listagem de postagens.
 
 **Método:** GET  
-**Endpoint:** /postagens  
+**Endpoint:** /postagens <br>
 **Passos do Teste:**
 - Envio de uma requisição GET para /postagens.
 - Verificação do código de status da resposta (esperado: 200).
@@ -29,6 +29,10 @@ Este teste verifica a adição de uma nova postagem.
 
 **Método:** POST  
 **Endpoint:** /postagens  
+**Body:**  ``` {
+"mensagem": "Precisamos de doação tipo sanguineo AB+",
+"cnpj": "87020517000120"
+}``` <br>
 **Passos do Teste:**
 - Criação de um objeto `DadosCadastroPostagemDTO` representando uma nova postagem.
 - Envio de uma requisição POST para /postagens com o objeto de postagem no corpo.
@@ -56,6 +60,10 @@ Este teste verifica a atualização de uma postagem existente.
 
 **Método:** PUT  
 **Endpoint:** /postagens  
+**Body:**  ``` {
+"id": 1,
+"mensagem": "Precisamos de doação tipo sanguineo AB+",
+}``` <br>
 **Passos do Teste:**
 - Criação de um objeto `DadosAtualizacaoPostagemDTO` representando a atualização da postagem.
 - Envio de uma requisição PUT para /postagens com o objeto de atualização no corpo.
