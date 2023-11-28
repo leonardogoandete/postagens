@@ -1,6 +1,6 @@
-# Microserviço de Postagens
+# Microsserviço de Postagens
 
-Microserviço responsável por manipular as postagens de instituições.<br>
+Microsserviço responsável por manipular as postagens de instituições.<br>
 Onde contem as seguintes personas:<br>
 #### Instituição:
 > Posta uma postagem;<br>
@@ -72,9 +72,9 @@ docker run -e QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://127.0.0.1:5432/posta
 
 ```
 
-## Dependencia de outros microserviços:
-- Microserviço de login: https://github.com/LEO-SF/Service_cadastrar
-- Microserviço de cadastro: https://github.com/EnzoGRodrigues/DoaSangueLogin
+## Dependencia de outros microsserviços:
+- Microsserviço de login: https://github.com/LEO-SF/Service_cadastrar
+- Microsserviço de cadastro: https://github.com/EnzoGRodrigues/DoaSangueLogin
 
 ## Documentação dos testes
 
