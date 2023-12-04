@@ -81,7 +81,7 @@ docker run -e QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://127.0.0.1:5432/posta
 Aqui está a documentação dos testes realizados no projeto:
 
  - [Testes de API](PostagemResourceTest.md)
- - [Testes de Unidade](PostagemResourceUnitTest.md)
+ - [Testes de Unidade Resource](PostagemResourceUnitTest.md)
  - [Testes de Model Postagem](PostagemModel.md)
- - [Testes de API](PostagemServiceTest.md)
+ - [Testes de Unidade Service](PostagemServiceTest.md)
  - [Testes de Sistema](https://github.com/leonardogoandete/doasanguepoa/blob/main/README.md)
