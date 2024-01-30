@@ -75,6 +75,3 @@ jobs:
 
       - name: Enviando a imagem para o Dockerhub
         run: docker push leogoandete/postagens:$GITHUB_REF_NAME
-
-      - name: Enviando a imagem para o Dockerhub
-        run: ./mvnw install -Dquarkus.container-image.group=${{ secrets.DOCKER_USERNAME }} -Dquarkus.container-image.tag=$GITHUB_REF_NAME -Dquarkus.container-image.push=true
