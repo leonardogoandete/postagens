@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jdk-jammy as build
+FROM eclipse-temurin:17-jdk-alpine as build
 WORKDIR /app
 
 COPY .mvn/ .mvn/
@@ -11,10 +11,10 @@ COPY ./src/main/ app/src/main/
 
 RUN ./mvnw package -Dquarkus.package.type=uber-jar
 
-FROM eclipse-temurin:17-jre-jammy as app
-RUN groupadd -g 999 app && \
-    useradd -r -u 999 -g app app
-USER app
+FROM eclipse-temurin:17-jre-alpine as app
+RUN addgroup -S appgroup && \
+    adduser -S appuser -G appgroup
+USER appuser
 COPY --from=build /app/target/*.jar /app/app.jar
 
 EXPOSE 8080
