@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jdk-alpine as build
+FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
 
 COPY .mvn/ .mvn/
@@ -7,11 +7,11 @@ COPY pom.xml /app/pom.xml
 
 RUN ./mvnw dependency:go-offline
 
-COPY ./src/main/ app/src/main/
+COPY ./src/main/ ./src/main/
 
 RUN ./mvnw package -Dquarkus.package.type=uber-jar
 
-FROM eclipse-temurin:17-jre-alpine as app
+FROM eclipse-temurin:17-jre-alpine AS app
 RUN addgroup -S appgroup && \
     adduser -S appuser -G appgroup
 USER appuser
