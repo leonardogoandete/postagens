@@ -51,6 +51,19 @@ jobs:
           scan-type: 'fs'
           scan-ref: '.'
 
+      - name: Build do projeto
+        run: docker build -t leogoandete/postagens:latest .
+
+      - name: Autenticando no docker registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Enviando a imagem para o Dockerhub
+        run: docker push leogoandete/postagens:latest
+
   gerando-imagem-docker:
     if: github.event_name == 'release' && github.event.action == 'published'
 #   o job de build-and-analyze precisa ter passado para iniciar a geração de imagem
